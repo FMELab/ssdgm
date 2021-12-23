@@ -1,0 +1,16 @@
+_target_: src.models.autoencoder.Autoencoder
+
+encoder:
+  _target_: src.models.modules.encoder.Encoder
+  input_size: 18
+  lin1_size: 128
+  lin2_size: 64
+  lin3_size: 32
+  latent_size: 16
+decoder:
+  _target_: src.models.modules.decoder.Decoder
+  latent_size: 16
+  lin1_size: 32
+  lin2_size: 64
+  lin3_size: 128
+  output_size: 18
