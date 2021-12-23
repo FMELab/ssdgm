@@ -1,0 +1,5 @@
+outs:
+- md5: 1926f8f70cdcb3106448f12618ca5ab1.dir
+  size: 3658560
+  nfiles: 2
+  path: protein

@@ -1,0 +1,5 @@
+outs:
+- md5: 8a3c03e197d2db7d2f72e0f0617c3177.dir
+  size: 117788616
+  nfiles: 2
+  path: blog

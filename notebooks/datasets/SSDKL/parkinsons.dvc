@@ -1,0 +1,5 @@
+outs:
+- md5: 6e64935a30b7c19878efe266dbad13a0.dir
+  size: 987160
+  nfiles: 2
+  path: parkinsons

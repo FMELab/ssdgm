@@ -1,0 +1,5 @@
+outs:
+- md5: 76774f17abbe38afd488d524d154bce6.dir
+  size: 164780160
+  nfiles: 2
+  path: ctslice
