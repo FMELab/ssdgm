@@ -1,0 +1,7 @@
+_target_: src.datamodules.skillcraft_datamodule.SkillcraftDataModule
+
+data_dir: ${data_dir} # data_dir is specified in config.yaml
+batch_size: 64
+split_mode: "relative"
+num_workers: 0
+pin_memory: False
