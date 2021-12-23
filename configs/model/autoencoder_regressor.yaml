@@ -1,0 +1,3 @@
+_target_: src.models.autoencoder_regressor.AutoencoderRegressor
+
+ckpt_path: /home/flo/ssdgm/logs/runs/2021-12-16/15-07-24/checkpoints/epoch_008.ckpt
