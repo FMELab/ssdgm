@@ -1,0 +1,93 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=srgan.yaml
+
+defaults:
+  - override /mode: exp.yaml
+  - override /trainer: null
+  - override /model: null
+  - override /datamodule: null
+  - override /callbacks: null
+  - override /logger: null
+
+name: "srgan"
+
+seed: 42
+
+trainer:
+  _target_: pytorch_lightning.Trainer
+  gpus: 1
+  min_epochs: 1
+  max_epochs: 200 
+  gradient_clip_val: 0.8
+  accumulate_grad_batches: 1
+  weights_summary: "full"
+  num_sanity_val_steps: 0
+
+model:  
+  _target_: src.models.srgan.SRGAN
+  generator:
+    _target_: src.models.modules.dense.Fcn
+    in_features: 15
+    hidden_features: [32, 32, 32]
+    out_features: 18
+    normalize: True
+  discriminator:
+    _target_: src.models.modules.dense.Fcn
+    in_features: 18
+    hidden_features: [32]
+    out_features: 1
+    normalize: False
+  latent_dim: 15
+  gradient_penalty_multiplier: 0.01
+  lr: 0.002
+  weight_decay: 0.0005
+
+datamodule:
+  _target_: src.datamodules.skillcraft_datamodule.SkillcraftDataModule
+  data_dir: ${data_dir} # data_dir is specified in config.yaml
+  batch_size: 256
+  split_mode: "relative"
+  split:
+    - 0.8
+    - 0.1
+    - 0.9
+  num_workers: 0
+  pin_memory: False
+
+callbacks:
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: "val/mse" # name of the logged metric which determines when model is improving
+    mode: "min" # "max" means higher metric value is better, can be also "min"
+    save_top_k: 1 # save k best models (determined by above metric)
+    save_last: True # additionaly always save model from last epoch
+    verbose: False
+    dirpath: "checkpoints/"
+    filename: "epoch_{epoch:03d}"
+    auto_insert_metric_name: False
+
+  early_stopping:
+    _target_: pytorch_lightning.callbacks.EarlyStopping
+    monitor: "val/mse" # name of the logged metric which determines when model is improving
+    mode: "min" # "max" means higher metric value is better, can be also "min"
+    patience: 100 # how many validation epochs of not improving until training stops
+    min_delta: 0 # minimum change in the monitored metric needed to qualify as an improvement
+
+  rich_progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
+
+logger:
+  wandb:
+    _target_: pytorch_lightning.loggers.wandb.WandbLogger
+    project: "template-tests"
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    save_dir: "."
+    offline: False
+    log_model: false
+    prefix: ""
+    job_type: "train"
+    group: ""
+    tags: ["best_model", "skillcraft"]
+    notes: "This is an SRGAN model test run."
