@@ -1,0 +1,84 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=deterministic_predictor.yaml
+
+defaults:
+  - override /mode: exp.yaml
+  - override /trainer: null
+  - override /model: null
+  - override /datamodule: null
+  - override /callbacks: null
+  - override /logger: null
+
+name: "deterministic predictor"
+
+seed: 42
+
+trainer:
+  _target_: pytorch_lightning.Trainer
+  gpus: 1
+  min_epochs: 1
+  max_epochs: 50
+  gradient_clip_val: 0.5
+  accumulate_grad_batches: 2
+  weights_summary: "full"
+  num_sanity_val_steps: 0
+
+model:  
+  _target_: src.models.deterministic_vae.DeterministicPredictor
+  vae_checkpoint_path: "/home/flo/ssdgm/logs/experiments/variational_autoencoder/runs/2022-03-01/16-29-37/checkpoints/epoch_003.ckpt"
+  regressor:
+    _target_: src.models.modules.dense.Fcn
+    in_features: 12  #! this must be equal to the latent dim of the VAE
+    hidden_features: [32, 16]
+    out_features: 1
+  lr: 0.002
+
+datamodule:
+  _target_: src.datamodules.datamodules.SkillcraftDataModule
+  data_dir: ${data_dir}  # data_dir is specified in config.yaml
+  batch_size: 128
+  split_mode: "relative"
+  split:
+    - 0.8
+    - 0.05
+    - 0.9
+  num_workers: 0
+  pin_memory: False
+
+callbacks:
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: "val/MSE" # name of the logged metric which determines when model is improving
+    mode: "min" # "max" means higher metric value is better, can be also "min"
+    save_top_k: 1 # save k best models (determined by above metric)
+    save_last: True # additionaly always save model from last epoch
+    verbose: False
+    dirpath: "checkpoints/"
+    filename: "epoch_{epoch:03d}"
+    auto_insert_metric_name: False
+
+  early_stopping:
+    _target_: pytorch_lightning.callbacks.EarlyStopping
+    monitor: "val/MSE" # name of the logged metric which determines when model is improving
+    mode: "min" # "max" means higher metric value is better, can be also "min"
+    patience: 100 # how many validation epochs of not improving until training stops
+    min_delta: 0 # minimum change in the monitored metric needed to qualify as an improvement
+
+  rich_progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
+
+#logger:
+  #wandb:
+    #_target_: pytorch_lightning.loggers.wandb.WandbLogger
+    #project: "template-tests"
+    #name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    #save_dir: "."
+    #offline: False
+    #log_model: false
+    #prefix: ""
+    #job_type: "train"
+    #group: ""
+    #tags: ["best_model", "skillcraft"]
+    #notes: "This is a test run for the deterministic predictor."
