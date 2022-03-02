@@ -71,6 +71,9 @@ callbacks:
 
 logger:
   wandb:
+    _target_: pytorch_lightning.loggers.wandb.WandbLogger
     name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    project: "template-tests"
+    offline: False
     tags: ["best_model", "mnist"]
     notes: "Description of this model."
