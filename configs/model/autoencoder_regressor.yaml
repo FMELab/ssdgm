@@ -1,3 +1,11 @@
 _target_: src.models.autoencoder_regressor.AutoencoderRegressor
 
 ckpt_path: /home/flo/ssdgm/logs/runs/2021-12-16/15-07-24/checkpoints/epoch_008.ckpt
+
+regressor:
+  _target_: src.models.modules.dense.FullyConnectedNetwork
+  input_size: 16
+  lin1_size: 128
+  lin2_size: 64
+  lin3_size: 32
+  output_size: 1
