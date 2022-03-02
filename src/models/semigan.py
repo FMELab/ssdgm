@@ -1,4 +1,3 @@
-from distutils.ccompiler import gen_lib_options
 from typing import Any, List
 import pytorch_lightning as pl
 
@@ -6,11 +5,8 @@ import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.optim import Adam
 
-from torchmetrics import MetricCollection
-from torchmetrics.regression.mean_squared_error import MeanSquaredError
-from torchmetrics.aggregation import MinMetric
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
 class SemiGAN(pl.LightningModule):
     def __init__(
@@ -47,51 +43,30 @@ class SemiGAN(pl.LightningModule):
         self.inv    = inverse_net
         self.infer  = inference_net
 
-        self.save_hyperparameters(logger=False)
+        self.save_hyperparameters(
+            logger=False,
+            ignore=["discriminator_x", "discriminator_y", "discriminator_xy",
+                    "generator_x", "generator_y",
+                    "inverse_net",
+                    "inference_net"
+                    ]
+        )
 
         #TODO: initialize all SemiGAN parameters with Xavier; implement a function for it!
 
         #TODO: implement all(!) evaluation metrics
         
         # metrics for evaluation phase
-        metrics = MetricCollection([MeanSquaredError(), MeanSquaredError])
-
-
-        self.val_mse = MeanSquaredError()
-        self.val_mse_best = MinMetric()
-
-        self.val_rmse = MeanSquaredError(squared=False)
-        self.val_rmse_best = MinMetric()
-
-        # metrics for test phase
-        self.test_mse = MeanSquaredError()
-        self.test_rmse = MeanSquaredError(squared=False)
-        
-
-    def configure_optimizers(self):
-        dis_opt = Adam(
-            params=list(self.dis_x.parameters()) + list(self.dis_y.parameters()) + list(self.dis_xy.parameters()),
-            lr=self.hparams.lr,
-            #weight_decay=self.hparams.weight_decay,
-        )
-        gen_opt = Adam(
-            params=list(self.gen_x.parameters()) + list(self.gen_y.parameters()),
-            lr=self.hparams.lr,
-            #weight_decay=self.hparams.weight_decay,
-        )
-        inv_opt = Adam(
-            params=self.inv.parameters(),
-            lr=self.hparams.lr,
-            #weight_decay=self.hparams.weight_decay,
-        )
-        inf_opt = Adam(
-            params=self.infer.parameters(),
-            lr=self.hparams.lr,
-            #weight_decay=self.hparams.weight_decay,
+        metrics = MetricCollection(
+            {
+                "MSE": MeanSquaredError(),
+                "RMSE": MeanSquaredError(squared=False),
+            }
         )
 
-        return [dis_opt, gen_opt, inv_opt, inf_opt], []  # second list is for (optional) learning rate schedulers
-
+        self.train_metrics = MetricTracker(metrics.clone(prefix='train/'), maximize=[False, False])
+        self.valid_metrics = MetricTracker(metrics.clone(prefix='val/'), maximize=[False, False])
+        self.test_metrics = MetricTracker(metrics.clone(prefix='test/'), maximize=[False, False])
 
     def calc_discriminator_loss(self, x_labeled, y, x_unlabeled, z, bsz_labeled, bsz_unlabeled):
         #bsz_labeled = x_labeled.size(0)
@@ -147,27 +122,27 @@ class SemiGAN(pl.LightningModule):
         return dis_loss  # we do not return the negative loss because the `binary_cross_entropy_with_logits` function already calculates it
 
     def calc_generator_loss(self, x_labeled, y, x_unlabeled, z):
-        fake = torch.zeros(z.size(0), 1)
-        fake = fake.type_as(z)
+        valid = torch.ones(z.size(0), 1)
+        valid = valid.type_as(z)
         
         # λ_G_x * log(1 - D_x(G_x(z)))
-        dis_x_fake_loss = self.hparams.gen_x_multiplier * F.binary_cross_entropy_with_logits(self.dis_x(self.gen_x(z)), fake)
+        dis_x_fake_loss = self.hparams.gen_x_multiplier * F.binary_cross_entropy_with_logits(self.dis_x(self.gen_x(z)), valid)
         self.log("train/gen/dis_x_fake_loss", dis_x_fake_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         # λ_G_y * log(1 - D_y(G_y(z)))
-        dis_y_fake_loss = self.hparams.gen_y_multiplier * F.binary_cross_entropy_with_logits(self.dis_y(self.gen_y(z)), fake)
+        dis_y_fake_loss = self.hparams.gen_y_multiplier * F.binary_cross_entropy_with_logits(self.dis_y(self.gen_y(z)), valid)
         self.log("train/gen/dis_y_fake_loss", dis_y_fake_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         # λ_G_xy * log(1- D_xy(G_x(z), G_y(z)))
-        dis_xy_fake_loss = self.hparams.gen_xy_multiplier * F.binary_cross_entropy_with_logits(self.dis_xy(torch.cat((self.gen_x(z), self.gen_y(z)), dim=1)), fake)
+        dis_xy_fake_loss = self.hparams.gen_xy_multiplier * F.binary_cross_entropy_with_logits(self.dis_xy(torch.cat((self.gen_x(z), self.gen_y(z)), dim=1)), valid)
         self.log("train/gen/dis_xy_fake_loss", dis_xy_fake_loss, on_step=False, on_epoch=True, prog_bar=False)
 
-        # λ_rec * || G_x(I_x(x^u) - x^u) ||₁
-        reconstruction_loss = self.hparams.reconstruction_multiplier * F.l1_loss(self.gen_x(self.inv(x_unlabeled)), x_unlabeled)
+        # λ_rec * || G_x(I_x(x^u) - x^u) ||₁ PROBLEM WITH L1
+        reconstruction_loss = self.hparams.reconstruction_multiplier * F.l1_loss(self.gen_x(self.inv(x_unlabeled)), x_unlabeled, reduction='sum') / x_unlabeled.size(0)
         self.log("train/gen/reconstruction_loss", reconstruction_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         # λ_tra * || y^l - G_y(I_x(x^l)) ||₁
-        translation_loss = self.hparams.translation_multiplier * F.l1_loss(self.gen_y(self.inv(x_labeled)), y)
+        translation_loss = self.hparams.translation_multiplier * F.l1_loss(self.gen_y(self.inv(x_labeled)), y, reduction='sum') / y.size(0)
         self.log("train/gen/translation_loss", translation_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         gen_loss = dis_x_fake_loss + dis_y_fake_loss + dis_xy_fake_loss + \
@@ -177,15 +152,15 @@ class SemiGAN(pl.LightningModule):
 
 
     def calc_inverse_loss(self, x_labeled, y, x_unlabeled, z):
-        # λ_rec * || G_x(I_x(x^u)) - x^u ||₁
-        reconstruction_loss = self.hparams.reconstruction_multiplier * F.l1_loss(self.gen_x(self.inv(x_unlabeled)), x_unlabeled)
+        # λ_rec * || G_x(I_x(x^u)) - x^u ||₁ PROBLEM WITH L1
+        reconstruction_loss = self.hparams.reconstruction_multiplier * F.l1_loss(self.gen_x(self.inv(x_unlabeled)), x_unlabeled, reduction='sum') / x_unlabeled.size(0)
         self.log("train/inv/reconstruction_loss", reconstruction_loss, on_step=False, on_epoch=True, prog_bar=False)
         # λ_tra * || y^l - G_y(I_x(x^l)) ||₁
-        translation_loss = self.hparams.translation_multiplier * F.l1_loss(self.gen_y(self.inv(x_labeled)), y)
+        translation_loss = self.hparams.translation_multiplier * F.l1_loss(self.gen_y(self.inv(x_labeled)), y, reduction='sum') / y.size(0)
         self.log("train/inv/translation_loss", translation_loss, on_step=False, on_epoch=True, prog_bar=False)
 
-        # λ_inv * || I_x(G_x(z) - z) ||₁
-        inverse_loss = self.hparams.inverse_multiplier * F.l1_loss(self.inv(self.gen_x(z)), z)
+        # λ_inv * || I_x(G_x(z) - z) ||₁ PROBLEM WITH L1
+        inverse_loss = self.hparams.inverse_multiplier * F.l1_loss(self.inv(self.gen_x(z)), z, reduction='sum') / z.size(0)
         self.log("train/inv/inverse_loss", inverse_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         inv_loss = reconstruction_loss + translation_loss + inverse_loss
@@ -196,11 +171,11 @@ class SemiGAN(pl.LightningModule):
     def calc_inference_loss(self, x_labeled, y, x_unlabeled, z):
 
         # || G_y(z) - F(G_x(z))  ||₁
-        synthesized_loss = F.l1_loss(self.gen_y(z), self.infer(self.gen_x(z)))
+        synthesized_loss = F.l1_loss(self.gen_y(z), self.infer(self.gen_x(z)), reduction='sum') / z.size(0)
         self.log("train/infer/synthesized_loss", synthesized_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         # λ_syn * || y^l - F(x^l) ||₁
-        inference_loss = self.hparams.synthesized_multiplier * F.l1_loss(y, self.infer(x_labeled))
+        inference_loss = self.hparams.synthesized_multiplier * F.l1_loss(y, self.infer(x_labeled), reduction='sum') / y.size(0)
         self.log("train/infer/inference_loss", inference_loss, on_step=False, on_epoch=True, prog_bar=False)
 
         # λ_con * || F(x^u ⊕ e) - F(x^u ⊕ e') ||^2  
@@ -218,12 +193,13 @@ class SemiGAN(pl.LightningModule):
 
         return y_hat
 
+    def on_train_epoch_start(self) -> None:
+        self.train_metrics.increment()
 
     def training_step(self, batch: Any, batch_idx: int, optimizer_idx: int):
         
         # Labeled examples and labels
         x_labeled, y = batch["labeled"]
-        y = y[:, None]
         bsz_labeled = x_labeled.size(0)
 
         # Unlabeled examples
@@ -233,6 +209,9 @@ class SemiGAN(pl.LightningModule):
         # Sample noise
         z = torch.randn(x_unlabeled.shape[0], self.hparams.latent_size)
         z = z.type_as(x_unlabeled)
+
+        y_hat = self.forward(x_labeled)  # We need this line just for logging the metrics during training
+        self.train_metrics(y_hat, y)
 
 
         # Optimize the three discriminators D_x, D_y, D_xy
@@ -267,22 +246,58 @@ class SemiGAN(pl.LightningModule):
             return infer_loss
 
 
-    def validation_step(self, batch: Any, batch_idx: int):
-        pass
+    def training_epoch_end(self, outputs):
+        self.log_dict(self.train_metrics.compute())
 
-    # gets called on the end of the validation epoch
-    # `outputs` is a list that contains outputs returned by the `validation_step` method
-    def validation_epoch_end(self, outputs: List[Any]) -> None:
-        pass
+    def on_validation_epoch_start(self):
+        self.valid_metrics.increment()
+
+    def validation_step(self, batch: Any, batch_idx: int):
+        x, y = batch
+
+        y_hat = self.forward(x)
+
+        self.valid_metrics(y_hat, y)
+
+    def validation_epoch_end(self, outputs: List[Any]):
+        self.log_dict(self.valid_metrics.compute())
+        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
+        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
+        self.log_dict(best_metrics)
+
+    def on_test_epoch_start(self) -> None:
+        self.test_metrics.increment()        
 
     def test_step(self, batch: Any, batch_idx: int):
-        pass
+        x, y = batch
 
-    # gets called on the end of an epoch
-    def on_epoch_end(self) -> None:
-        pass
+        y_hat = self.forward(x)
 
+        self.test_metrics(y_hat, y)
 
+    def test_epoch_end(self, outputs: List[Any]) -> None:
+        self.log_dict(self.test_metrics.compute())
 
+    def configure_optimizers(self):
+        dis_opt = torch.optim.Adam(
+            params=list(self.dis_x.parameters()) + list(self.dis_y.parameters()) + list(self.dis_xy.parameters()),
+            lr=self.hparams.lr,
+            #weight_decay=self.hparams.weight_decay,
+        )
+        gen_opt = torch.optim.Adam(
+            params=list(self.gen_x.parameters()) + list(self.gen_y.parameters()),
+            lr=self.hparams.lr,
+            #weight_decay=self.hparams.weight_decay,
+        )
+        inv_opt = torch.optim.Adam(
+            params=self.inv.parameters(),
+            lr=self.hparams.lr,
+            #weight_decay=self.hparams.weight_decay,
+        )
+        inf_opt = torch.optim.Adam(
+            params=self.infer.parameters(),
+            lr=self.hparams.lr,
+            #weight_decay=self.hparams.weight_decay,
+        )
 
-    
+        return [dis_opt, gen_opt, inv_opt, inf_opt], []  # second list is for (optional) learning rate schedulers
