@@ -4,13 +4,10 @@ import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn.modules import distance
 
 from torch.optim import Adam
 
-from torchmetrics.regression.mean_squared_error import MeanSquaredError
-from torchmetrics.aggregation import MinMetric
-
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
 class SRGAN(pl.LightningModule):
     def __init__(
@@ -20,7 +17,6 @@ class SRGAN(pl.LightningModule):
         latent_dim,
         gradient_penalty_multiplier: float,
         lr: float,
-        weight_decay: float,
     ) -> None:
         super().__init__()
 
@@ -31,34 +27,17 @@ class SRGAN(pl.LightningModule):
 
         #TODO: initialize SRGAN parameters with Xavier; implement a function for it!
 
-
-        #TODO: implement all(!) evaluation metrics
-
-        # metrics for evaluation phase
-        self.val_mse = MeanSquaredError()
-        self.val_mse_best = MinMetric()
-
-        self.val_rmse = MeanSquaredError(squared=False)
-        self.val_rmse_best = MinMetric()
-
-        # metrics for test phase
-        self.test_mse = MeanSquaredError()
-        self.test_rmse = MeanSquaredError(squared=False)
-
-    def configure_optimizers(self):
-        gen_opt = Adam(
-            params=self.generator.parameters(),
-            lr=self.hparams.lr,
-            weight_decay=self.hparams.weight_decay,
-        )
-        
-        dis_opt = Adam(
-            params=self.discriminator.parameters(),
-            lr=self.hparams.lr,
-            weight_decay=self.hparams.weight_decay
+        metrics = MetricCollection(
+            {
+                "MSE": MeanSquaredError(),
+                "RMSE": MeanSquaredError(squared=False),
+            }
         )
 
-        return [dis_opt, gen_opt], []  # the second list is for learning rate schedulers
+        self.train_metrics = MetricTracker(metrics.clone(prefix='train/'), maximize=[False, False])
+        self.valid_metrics = MetricTracker(metrics.clone(prefix='val/'), maximize=[False, False])
+        self.test_metrics = MetricTracker(metrics.clone(prefix='test/'), maximize=[False, False])
+
 
     def _calc_feature_distance(self, features_base, features_other):
 
@@ -122,6 +101,9 @@ class SRGAN(pl.LightningModule):
 
         return y_hat, features
 
+    def on_train_epoch_start(self) -> None:
+        self.train_metrics.increment()
+
     def training_step(self, batch: Any, batch_idx: int, optimizer_idx: int):
         # Labeled examples and labels            
         x_labeled, y = batch["labeled"]
@@ -139,6 +121,9 @@ class SRGAN(pl.LightningModule):
         x_fake = self.generator(z)
         _, features_fake = self.forward(x_fake)
 
+
+        self.train_metrics(y_hat, y)
+
         # train the discriminator
         if optimizer_idx == 0:
             loss_labeled = F.mse_loss(y_hat, y)
@@ -152,7 +137,9 @@ class SRGAN(pl.LightningModule):
             self.log("train/loss_unlabeled", loss_unlabeled, on_step=False, on_epoch=True, prog_bar=False)
             self.log("train/loss_fake", loss_fake, on_step=False, on_epoch=True, prog_bar=False)
             self.log("train/gradient_penalty", gradient_penalty, on_step=False, on_epoch=True, prog_bar=False)
+
             self.log("train/dis_loss", dis_loss, on_step=False, on_epoch=True, prog_bar=False)
+
             return dis_loss
 
         # train the generator
@@ -162,36 +149,46 @@ class SRGAN(pl.LightningModule):
             self.log("train/gen_loss", gen_loss, on_step=False, on_epoch=True, prog_bar=False)
             return gen_loss
 
+    def training_epoch_end(self, outputs):
+        self.log_dict(self.train_metrics.compute())
+
+    def on_validation_epoch_start(self):
+        self.valid_metrics.increment()
+
     def validation_step(self, batch: Any, batch_idx: int):
         x, y = batch
+
         y_hat, _ = self.forward(x)
 
-        mse = self.val_mse(y_hat.view(y.size()), y)
-        self.log("val/mse", mse, on_step=False, on_epoch=True, prog_bar=False)
-
-        rmse = self.val_rmse(y_hat.view(y.size()), y)
-        self.log("val/rmse", rmse, on_step=False, on_epoch=True, prog_bar=False)
+        self.valid_metrics(y_hat, y)
 
     def validation_epoch_end(self, outputs: List[Any]) -> None:
-        mse = self.val_mse.compute()
-        self.val_mse_best.update(mse)
-        self.log("val/mse_best", self.val_mse_best.compute(), on_epoch=True, prog_bar=False)
+        self.log_dict(self.valid_metrics.compute())
+        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
+        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
+        self.log_dict(best_metrics)
 
-        rmse = self.val_rmse.compute()
-        self.val_rmse_best.update(rmse)
-        self.log("val/rmse_best", self.val_rmse_best.compute(), on_epoch=True, prog_bar=False)
+    def on_test_epoch_start(self) -> None:
+        self.test_metrics.increment()        
 
     def test_step(self, batch: Any, batch_index: int):
         x, y = batch
         y_hat, _ = self.forward(x)
 
-        mse = self.test_mse(y_hat.view(y.size()), y)
-        self.log("test/mse", mse, on_step=False, on_epoch=True, prog_bar=False)
+        self.test_metrics(y_hat, y)
 
-        rmse = self.test_rmse(y_hat.view(y.size()), y)
-        self.log("test/rmse", rmse, on_step=False, on_epoch=True, prog_bar=False)
+    def test_epoch_end(self, outputs: List[Any]) -> None:
+        self.log_dict(self.test_metrics.compute())
 
-    def on_epoch_end(self) -> None:
-        self.val_mse.reset()
-        self.test_mse.reset()
-    
+    def configure_optimizers(self):
+        gen_opt = Adam(
+            params=self.generator.parameters(),
+            lr=self.hparams.lr,
+        )
+        
+        dis_opt = Adam(
+            params=self.discriminator.parameters(),
+            lr=self.hparams.lr,
+        )
+
+        return [dis_opt, gen_opt], []  # the second list is for learning rate schedulers
