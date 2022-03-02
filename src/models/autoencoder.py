@@ -1,30 +1,17 @@
 from typing import Any, List
 import pytorch_lightning as pl
-from torchmetrics.aggregation import MinMetric
 
-from torchmetrics.regression.mean_squared_error import MeanSquaredError
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
 import torch
 
-from src.models.modules.encoder import Encoder
-from src.models.modules.decoder import Decoder
 
 class Autoencoder(pl.LightningModule):
     def __init__(
         self,
-        encoder: Encoder,
-        decoder: Decoder,
-        #input_size: int = 18,
-        #lin1_size: int = 256,
-        #lin2_size: int = 128,
-        #lin3_size: int = 64,
-        #latent_size: int = 32,
-        #lin4_size: int = 64,
-        #lin5_size: int = 128,
-        #lin6_size: int = 256,
-        #output_size: int = 18,
+        encoder,
+        decoder,
         lr: float = 0.001,
-        weight_decay: float = 0.0005,
     ) -> None:
         super().__init__()
 
@@ -32,81 +19,104 @@ class Autoencoder(pl.LightningModule):
 
         self.encoder = encoder
         self.decoder = decoder
-        #self.encoder = Encoder(hparams=self.hparams)
-        #self.decoder = Decoder(hparams=self.hparams)
 
         self.criterion = torch.nn.MSELoss()
 
-        self.train_mse = MeanSquaredError() 
-        self.val_mse = MeanSquaredError()
-        self.test_mse = MeanSquaredError()
+        metrics = MetricCollection(
+            {
+                "MSE": MeanSquaredError(),
+                "RMSE": MeanSquaredError(squared=False),
+            }
+        )
 
-        self.val_mse_best = MinMetric()
+        self.train_metrics = MetricTracker(metrics.clone(prefix='train/'), maximize=[False, False])
+        self.valid_metrics = MetricTracker(metrics.clone(prefix='val/'), maximize=[False, False])
+        self.test_metrics = MetricTracker(metrics.clone(prefix='test/'), maximize=[False, False])
+        #self.train_mse = MeanSquaredError() 
+        #self.val_mse = MeanSquaredError()
+        #self.test_mse = MeanSquaredError()
+
+        #self.val_mse_best = MinMetric()
 
     def forward(self, x: torch.Tensor):
         z = self.encoder(x)
         x_hat = self.decoder(z)
         return x_hat, z
 
-    def _get_reconstruction_loss(self, batch, stage):
+    #def _get_reconstruction_loss(self, batch, stage):
 
-        if stage == "fit":
-            x_labeled, _ = batch["labeled"]
-            x_unlabeled, _ = batch["unlabeled"]
+        #if stage == "fit":
+            #x_labeled, _ = batch["labeled"]
+            #x_unlabeled, _ = batch["unlabeled"]
 
-            x = torch.cat((x_labeled, x_unlabeled), dim=0)
+            #x = torch.cat((x_labeled, x_unlabeled), dim=0)
         
-        if stage in ("val", "test"):
-            x, _ = batch
+        #if stage in ("val", "test"):
+            #x, _ = batch
 
+        #x_hat, _ = self.forward(x)
+        #loss = self.criterion(x, x_hat)
+
+        #return loss, x, x_hat
+
+
+    def on_train_epoch_start(self) -> None:
+        self.train_metrics.increment()
+
+    def training_step(self, batch: Any, batch_idx: int):
+
+        x_labeled, _ = batch["labeled"]
+        x_unlabeled, _ = batch["unlabeled"]
+
+        x = torch.cat((x_labeled, x_unlabeled), dim=0)
+        
         x_hat, _ = self.forward(x)
         loss = self.criterion(x, x_hat)
 
-        return loss, x, x_hat
-
-    def training_step(self, batch: Any, batch_idx: int):
-        loss, x, x_hat = self._get_reconstruction_loss(batch, stage="fit")
-
-        mse = self.train_mse(x, x_hat)
+        # Log the loss
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("train/mse", mse, on_step=False, on_epoch=True, prog_bar=False)
+
+        self.train_metrics(x_hat, x)
 
         return loss
 
-    def training_epoch_end(self, outputs: List[Any]):
-        pass
+    def training_epoch_end(self, outputs):
+        # Log the metrics at the end of each training epoch
+        self.log_dict(self.train_metrics.compute())
+
+
+    def on_validation_epoch_start(self):
+        self.valid_metrics.increment()
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss, x, x_hat = self._get_reconstruction_loss(batch, stage="val")
+        x, _ = batch
+        x_hat, _ = self.forward(x)
 
-        mse = self.val_mse(x, x_hat)
-        self.log("val/loss", loss)
-        self.log("val/mse", mse)
+        self.valid_metrics(x_hat, x)
 
     def validation_epoch_end(self, outputs: List[Any]):
-        mse = self.val_mse.compute()
-        self.val_mse_best.update(mse)
-        self.log("val/mse_best", self.val_mse_best.compute(), on_epoch=True, prog_bar=True)
+        self.log_dict(self.valid_metrics.compute())
+        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
+        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
+        self.log_dict(best_metrics)
+
+
+    def on_test_epoch_start(self) -> None:
+        self.test_metrics.increment()
 
     def test_step(self, batch: Any, batch_idx: int):
-        loss, x, x_hat = self._get_reconstruction_loss(batch, stage="test")
+        x, _ = batch
+        x_hat, _ = self.forward(x)
 
-        mse = self.test_mse(x, x_hat)
-        self.log("test/loss", loss)
-        self.log("test/mse", mse)
+        self.test_metrics(x_hat, x)
 
     def test_epoch_end(self, outputs: List[Any]):
-        pass
+        self.log_dict(self.test_metrics.compute())
 
-    def on_epoch_end(self) -> None:
-        self.train_mse.reset()
-        self.val_mse.reset()
-        self.test_mse.reset()
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
             params=self.parameters(),
             lr=self.hparams.lr,
-            weight_decay=self.hparams.weight_decay
         )
         return optimizer
