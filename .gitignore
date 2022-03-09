@@ -147,3 +147,5 @@ notebooks/datasets/
 wandb/
 .env
 .autoenv
+.devcontainer/
+wandb_kubernetes.yaml
