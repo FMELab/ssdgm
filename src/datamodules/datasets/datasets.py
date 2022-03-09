@@ -300,7 +300,7 @@ class CTSlice(Skillcraft):
 
     files_to_read = ["slice_localization_data.csv"]
 
-    dataset_file = "blog.pt"
+    dataset_file = "ctslice.pt"
 
     
     def _download_data(self, url, root):
@@ -390,3 +390,20 @@ class Electric(Skillcraft):
         data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return data_set
+
+if __name__ == "__main__":
+    root = os.path.join(os.getcwd(), "data")
+    print(root)
+    download = False
+    datasets = [
+        Skillcraft(root, download),
+        Parkinson(root, download),
+        Elevators(root, download),
+        Protein(root, download),
+        Blog(root, download),
+        CTSlice(root, download),
+        Buzz(root, download),
+        Electric(root, download),
+    ]
+    for ds in datasets:
+        print(f"no. of samples for {ds.dataset_file}: {len(ds)}")
