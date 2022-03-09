@@ -1,16 +1,16 @@
 # @package _global_
 
 # to execute this experiment run:
-# python run.py experiment=srgan.yaml
+# python run.py experiment=mlp.yaml
 
 defaults:
   - override /datamodule: skillcraft.yaml
-  - override /model: srgan.yaml
+  - override /model: mlp.yaml
   - override /callbacks: default.yaml
   - override /logger: wandb.yaml
   - override /trainer: experiment.yaml
 
-name: "srgan"
+name: "mlp"
 
 seed: 42
 
