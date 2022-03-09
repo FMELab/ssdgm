@@ -59,7 +59,10 @@ class FcBlock(nn.Module):
     ) -> None:
         super().__init__()
 
-        lin_layer = nn.Linear(in_features, out_features)
+        self.in_features = in_features
+        self.out_features = out_features
+
+        lin_layer = nn.Linear(self.in_features, self.out_features)
 
         if use_weight_norm:
             layers = [WeightNorm(lin_layer, ["weight"])]
@@ -67,7 +70,7 @@ class FcBlock(nn.Module):
             layers = [lin_layer]
 
         if use_batch_norm:
-            layers.append(nn.BatchNorm1d(out_features))
+            layers.append(nn.BatchNorm1d(self.out_features))
         
         if use_activation:
             layers.append(nn.LeakyReLU(negative_slope=leaky_relu_slope))
@@ -80,12 +83,94 @@ class FcBlock(nn.Module):
     def forward(self, x):
         return self.block(x)
 
+class Encoder(nn.Module):
+    def __init__(self, hparams: dict):
+        super().__init__()
+
+        self.first = FcBlock(
+            hparams["enc_in_features"], hparams["enc_hidden1_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        self.hidden1 = FcBlock(
+            hparams["enc_hidden1_features"], hparams["enc_hidden2_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        self.hidden2 = FcBlock(
+            hparams["enc_hidden2_features"], hparams["enc_hidden3_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        
+        self.last = FcBlock(
+            hparams["enc_hidden3_features"], hparams["enc_out_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+    def forward(self, x):
+        x = self.first(x)
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+
+        self.features = x
+
+        x = self.last(x)
+
+        return x
+
+class Decoder(nn.Module):
+    def __init__(self, hparams: dict):
+        super().__init__()
+
+        self.first = FcBlock(
+            hparams["dec_in_features"], hparams["dec_hidden1_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        self.hidden1 = FcBlock(
+            hparams["dec_hidden1_features"], hparams["dec_hidden2_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        self.hidden2 = FcBlock(
+            hparams["dec_hidden2_features"], hparams["dec_hidden3_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+        
+        self.last = FcBlock(
+            hparams["dec_hidden3_features"], hparams["dec_out_features"],
+            leaky_relu_slope=hparams["leaky_relu_slope"],
+            dropout_proba=hparams["dropout_proba"]
+        )
+
+    def forward(self, x):
+        x = self.first(x)
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+
+        self.features = x
+
+        x = self.last(x)
+
+        return x
+        
 class Fcn(nn.Module):
     def __init__(
         self,
         in_features,
         hidden_features,
         out_features,
+        leaky_relu_slope: float=0.1,
+        dropout_proba: float=0.1,
         #batch_norm: bool = False,
         #weight_norm: bool = False,
         #activate: bool = True,
@@ -93,17 +178,31 @@ class Fcn(nn.Module):
     ) -> None:
         super().__init__()
 
+
         #self.sizes = [in_features, *hidden_features, out_features]
         self.first = FcBlock(
             in_features, hidden_features[0],
-            )
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
 
-        self.hidden = nn.Sequential(*[FcBlock(in_f, out_f) for (in_f, out_f) in zip(hidden_features, hidden_features[1:])])
+        self.hidden = nn.Sequential(
+            *[
+                FcBlock(
+                    in_f,
+                    out_f,
+                    leaky_relu_slope=leaky_relu_slope,
+                    dropout_proba=dropout_proba,
+                )
+                for (in_f, out_f) in zip(hidden_features, hidden_features[1:])
+             ]
+        )
 
         self.last = FcBlock(
             hidden_features[-1], out_features,
             use_activation=False,
-            use_dropout=False)
+            use_dropout=False,
+        )
 
     def forward(self, x):
         x = self.first(x)
@@ -122,22 +221,36 @@ class VaeEncoder(nn.Module):
         self,
         in_features: int,
         hidden_features: List[int],
-        latent_features,
+        out_features,
+        leaky_relu_slope,
+        dropout_proba,
     ) -> None:
         super().__init__()
 
         self.first = FcBlock(in_features, hidden_features[0])
 
-        self.hidden = nn.Sequential(*[FcBlock(in_f, out_f) for (in_f, out_f) in zip(hidden_features, hidden_features[1:])])
+        self.hidden = nn.Sequential(
+            *[
+                FcBlock(
+                    in_f,
+                    out_f,
+                    leaky_relu_slope=leaky_relu_slope,
+                    dropout_proba=dropout_proba,
+                )
+                for (in_f, out_f) in zip(hidden_features, hidden_features[1:])
+            ]
+        )
         
         self.mean = FcBlock(
-            hidden_features[-1], latent_features,
+            hidden_features[-1],
+            out_features,
             use_activation=False,
             use_dropout=False,
         )
 
         self.log_var = FcBlock(
-            hidden_features[-1], latent_features,
+            hidden_features[-1],
+            out_features,
             use_activation=False,
             use_dropout=False,
         )
@@ -158,17 +271,36 @@ class DenseNetFcn(nn.Module):
         in_features,
         hidden_features: List[int],
         out_features,
+        leaky_relu_slope,
+        dropout_proba,
     ) -> None:
         super().__init__()
 
 
-        self.layer1 = FcBlock(in_features, hidden_features[0])
+        self.layer1 = FcBlock(
+            in_features, hidden_features[0],
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba,
+        )
 
-        self.layer2 = FcBlock(in_features + hidden_features[0], hidden_features[1])
+        self.layer2 = FcBlock(
+            in_features + hidden_features[0], hidden_features[1],
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba,
+        )
 
-        self.layer3 = FcBlock(in_features + hidden_features[0] + hidden_features[1], hidden_features[2])
+        self.layer3 = FcBlock(
+            in_features + hidden_features[0] + hidden_features[1], hidden_features[2],
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba,
+        )
 
-        self.layer4 = FcBlock(hidden_features[-1], out_features)
+        self.layer4 = FcBlock(
+            hidden_features[-1], out_features,
+            use_activation=False,
+            use_dropout=False,
+        )
+
 
     def forward(self, x):
         x1 = self.layer1(x)
