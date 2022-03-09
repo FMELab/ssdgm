@@ -1,4 +1,5 @@
 import gpytorch
+from gpytorch.utils.grid import choose_grid_size
 
 class DeepKernelLearning(gpytorch.models.ExactGP):
     def __init__(
@@ -6,22 +7,26 @@ class DeepKernelLearning(gpytorch.models.ExactGP):
         x_train,
         y_train,
         likelihood,
-        feature_extractor
+        encoder
     ) -> None:
         super().__init__(x_train, y_train, likelihood)
+        
+        self.encoder = encoder
+        enc_out_features = self.encoder.last.out_features
+
 
         self.mean_module = gpytorch.means.ConstantMean()
-
-        self.covar_module = gpytorch.kernels.GridInterpolationKernel(
-            gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel(ard_num_dims=2)),
-            num_dims=2, grid_size=100
+        self.covar_module = gpytorch.kernels.ScaleKernel(
+            gpytorch.kernels.RBFKernel(ard_num_dims=enc_out_features)
         )
 
-        self.feature_extractor = feature_extractor
+            
+
+        self.scale_to_bounds = gpytorch.utils.grid.ScaleToBounds(-1., 1.)
 
     def forward(self, x):
-        projected_x = self.feature_extractor(x)
-
+        projected_x = self.encoder(x)
+        #projected_x = self.scale_to_bounds(projected_x)  # Make the NN values "nice"    
         mean_x = self.mean_module(projected_x)
         covar_x = self.covar_module(projected_x)
 
