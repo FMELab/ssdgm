@@ -1,0 +1,29 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/mlp_elevators.yaml
+
+defaults:
+  - override /datamodule: elevators.yaml
+  - override /model: mlp.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "mlp"
+
+model:
+  in_features: 18
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "mlp_elevators"
+    tags: 
+      - ${name}
+      - "elevators"
+      - "hyperparameter_search"
+    notes: ""

@@ -1,0 +1,30 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/srgan_buzz.yaml
+
+defaults:
+  - override /datamodule: buzz.yaml
+  - override /model: srgan.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "srgan"
+
+model:
+  gen_out_features: 77
+  dis_in_features: 77
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "srgan_buzz"
+    tags: 
+      - ${name}
+      - "buzz"
+      - "hyperparameter_search"
+    notes: ""

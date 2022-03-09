@@ -1,0 +1,32 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/vae_protein.yaml
+
+defaults:
+  - override /datamodule: protein.yaml
+  - override /model: vae.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "vae"
+
+model:
+  enc_in_features: 9
+  enc_out_features: 2
+  dec_in_features: 2
+  dec_out_features: 9
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "vae_protein"
+    tags: 
+      - ${name}
+      - "protein"
+      - "hyperparameter_search"
+    notes: ""

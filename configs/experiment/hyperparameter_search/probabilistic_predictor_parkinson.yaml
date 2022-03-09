@@ -1,0 +1,29 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/probabilistic_predictor_parkinson.yaml
+
+defaults:
+  - override /datamodule: parkinson.yaml
+  - override /model: probabilistic_predictor.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "probabilistic_predictor"
+
+model:
+  reg_in_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "probabilistic_predictor_parkinson"
+    tags: 
+      - ${name}
+      - "parkinson"
+      - "hyperparameter_search"
+    notes: ""

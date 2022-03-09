@@ -1,0 +1,33 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/m2_vae_electric.yaml
+
+defaults:
+  - override /datamodule: electric.yaml
+  - override /model: m2_vae.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "m2_vae"
+
+model:
+  enc_in_features: 7
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 6
+  reg_in_features: 6
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "m2_vae_electric"
+    tags: 
+      - ${name}
+      - "electric"
+      - "hyperparameter_search"
+    notes: ""

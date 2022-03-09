@@ -1,0 +1,30 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/ssdkl_parkinson.yaml
+
+defaults:
+  - override /datamodule: parkinson.yaml
+  - override /model: ssdkl.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "ssdkl"
+
+model:
+  enc_in_features: 19
+  enc_out_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "ssdkl_parkinson"
+    tags: 
+      - ${name}
+      - "parkinson"
+      - "hyperparameter_search"
+    notes: ""

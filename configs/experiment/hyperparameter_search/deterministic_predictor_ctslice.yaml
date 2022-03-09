@@ -1,0 +1,29 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/deterministic_predictor_ctslice.yaml
+
+defaults:
+  - override /datamodule: ctslice.yaml
+  - override /model: deterministic_predictor.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "deterministic_predictor"
+
+model:
+  reg_in_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "deterministic_predictor_ctslice"
+    tags: 
+      - ${name}
+      - "ctslice"
+      - "hyperparameter_search"
+    notes: ""

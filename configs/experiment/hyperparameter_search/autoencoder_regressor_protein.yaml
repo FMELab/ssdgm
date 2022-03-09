@@ -1,0 +1,29 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/autoencoder_regressor_protein.yaml
+
+defaults:
+  - override /datamodule: protein.yaml
+  - override /model: autoencoder_regressor.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "autoencoder_regressor"
+
+model:
+  reg_in_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "autoencoder_regressor_protein"
+    tags: 
+      - ${name}
+      - "protein"
+      - "hyperparameter_search"
+    notes: ""

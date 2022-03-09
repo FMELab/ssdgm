@@ -1,0 +1,32 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/vae_blog.yaml
+
+defaults:
+  - override /datamodule: blog.yaml
+  - override /model: vae.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "vae"
+
+model:
+  enc_in_features: 276
+  enc_out_features: 2
+  dec_in_features: 2
+  dec_out_features: 276
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "vae_blog"
+    tags: 
+      - ${name}
+      - "blog"
+      - "hyperparameter_search"
+    notes: ""

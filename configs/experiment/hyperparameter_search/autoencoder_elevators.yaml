@@ -1,0 +1,32 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/autoencoder_elevators.yaml
+
+defaults:
+  - override /datamodule: elevators.yaml
+  - override /model: autoencoder.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "autoencoder"
+
+model:
+  enc_in_features: 18
+  enc_out_features: 2
+  dec_in_features: 2
+  dec_out_features: 18
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "autoencoder_elevators"
+    tags: 
+      - ${name}
+      - "elevators"
+      - "hyperparameter_search"
+    notes: ""
