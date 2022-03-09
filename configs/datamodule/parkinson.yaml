@@ -1,4 +1,4 @@
-_target_: src.datamodules.skillcraft_datamodule.SkillcraftDataModule
+_target_: src.datamodules.datamodules.ParkinsonDataModule
 
 data_dir: ${data_dir} # data_dir is specified in config.yaml
 batch_size: 64
