@@ -41,6 +41,7 @@ SHELL ["/bin/bash", "-c"]
 COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME} \
     && pip install --no-cache-dir -r requirements.txt \
+    && pip install https://github.com/PyTorchLightning/metrics/archive/master.zip \
     && rm requirements.txt
 
 
