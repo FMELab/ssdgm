@@ -87,13 +87,13 @@ class BaseDataModule(LightningDataModule):
                 pass
             
             # We have to do this to ensure the same batch size for unlabeled and labeled examples in SSDKL
-            if self.train_ssdkl and self.batch_size == 'None':
+            if self.train_ssdkl:# and self.batch_size == 'None':
                 self.batch_size = n_samples_train_labeled         
             
             self.data_train_labeled, self.data_train_unlabeled, self.data_val, self.data_test = random_split(
                                                 dataset=self.dataset,
                                                 lengths=split_lengths,
-                                                generator=torch.Generator().manual_seed(42),
+                                                #generator=torch.Generator().manual_seed(42),
             )
             params_dict = self._calc_standardization_params()
 
