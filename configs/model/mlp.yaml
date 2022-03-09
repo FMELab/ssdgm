@@ -1,0 +1,7 @@
+_target_: src.models.mlp.MultiLayerPerceptron
+in_features: 18
+hidden_features: [512, 512, 512]
+out_features: 1
+leaky_relu_slope: 0.2
+dropout_proba: 0.5
+lr: 0.0001

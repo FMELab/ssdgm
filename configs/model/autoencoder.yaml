@@ -1,18 +1,11 @@
 _target_: src.models.autoencoder.Autoencoder
-
-encoder:
-  _target_: src.models.modules.dense.FCN
-  input_size: 18
-  lin1_size: 256
-  lin2_size: 128
-  lin3_size: 64
-  lin4_size: 32
-  output_size: 16
-decoder:
-  _target_: src.models.modules.dense.FCN
-  input_size: 16
-  lin1_size: 32
-  lin2_size: 64
-  lin3_size: 128
-  lin4_size: 256
-  output_size: 18
+enc_in_features: 18
+enc_hidden_features: [512, 512, 512]
+enc_out_features: 10
+dec_in_features: 10
+dec_hidden_features: [512, 512, 512]
+dec_out_features: 18
+# HYPERPARAMETERS
+leaky_relu_slope: 0.3
+dropout_proba: 0.5
+lr: 0.0001

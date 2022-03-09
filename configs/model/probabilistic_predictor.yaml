@@ -1,0 +1,10 @@
+_target_: src.models.probabilistic_vae.ProbabilisticPredictor
+vae_checkpoint_path: "/home/flo/ssdgm/logs/experiments/variational_autoencoder/runs/2022-02-07/13-07-44/template-tests/i4ly2kdq/checkpoints/epoch=49-step=499.ckpt"
+reg_in_features: 12  #! this must be equal to the latent dim of the used VAE
+reg_hidden_features: [512, 512, 512]
+reg_out_features: 1
+# HYPERPARAMS
+regressor_stddev: 0.5
+leaky_relu_slope: 0.2
+dropout_proba: 0.5
+lr: 0.01

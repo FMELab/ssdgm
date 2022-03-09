@@ -1,0 +1,45 @@
+_target_: src.models.semigan.SemiGAN
+# DISCRIMINATOR_X
+dis_x_in_features: 18  # no. of features
+dis_x_hidden_features: [512, 512, 512]
+dis_x_out_features: 1
+# DISCRIMINATOR_Y
+dis_y_in_features: 1  # no. of labels
+dis_y_hidden_features: [512, 512, 512]
+dis_y_out_features: 1
+# DISCRIMINATOR_XY
+dis_xy_in_features: 19  # no. of features + labels
+dis_xy_hidden_features: [512, 512, 512]
+dis_xy_out_features: 1
+# GENERATOR_X
+gen_x_hidden_features: [512, 512, 512]
+gen_x_out_features: 18  # no. of features
+# GENERATOR_Y
+gen_y_hidden_features: [512, 512, 512]
+gen_y_out_features: 1  # no. of labels
+# INVERSE_NET
+inv_in_features: 18  # no. of features
+inv_hidden_features: [512, 512, 512]
+# INFERENCE_NET
+infer_in_features: 18  # no. of features
+infer_hidden_features: [512, 512, 512]
+infer_out_features: 1  # no. of labels
+# LATENT
+latent_features: 25  # used for the input of generators and output of inverse net
+# LOSS MULTIPLIERS
+dis_x_multiplier:          1.0  # λ_D_x 
+dis_y_multiplier:          1.0  # λ_D_y
+dis_xy_multiplier:         1.0  # λ_D_xy
+gen_x_multiplier:          1.0  # λ_G_x
+gen_y_multiplier:          1.0  # λ_G_y
+gen_xy_multiplier:         1.0  # λ_G_xy
+translation_multiplier:    1.0  # λ_tra
+reconstruction_multiplier: 1.0  # λ_rec
+inverse_multiplier:        1.0  # λ_inv
+synthesized_multiplier:    1.0  # λ_syn
+consistency_multiplier:    1.0  # λ_con
+sufficient_inference_epoch: 10  # epoch when inference net predictions are added to input of dis_xy
+# HYPERPARAMS
+leaky_relu_slope: 0.2
+dropout_proba: 0.5
+lr: 0.00001

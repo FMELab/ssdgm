@@ -1,0 +1,12 @@
+_target_: src.models.vae.VariationalAutoencoder
+enc_in_features: 18
+enc_hidden_features: [512, 512, 512]
+enc_out_features: 15
+dec_in_features: 15
+dec_hidden_features: [512, 512, 512]
+dec_out_features: 18
+# HYPERPARAMETERS
+regularization_loss_multiplier: 1.0
+leaky_relu_slope: 0.2
+dropout_proba: 0.5
+lr: 0.00001

@@ -1,0 +1,12 @@
+_target_: src.models.srgan.SRGAN
+gen_in_features: 100  # size of random noise for generator
+gen_hidden_features: [512, 512, 512]
+gen_out_features: 18
+dis_in_features: 18
+dis_hidden_features: [512, 512, 512]
+dis_out_features: 1
+# HYPERPARAMETERS
+gradient_penalty_multiplier: 0.01
+leaky_relu_slope: 0.2
+dropout_proba: 0.5
+lr: 0.002
