@@ -1,0 +1,58 @@
+models:
+  - name: "mlp"
+  - name: "autoencoder"
+  - name: "vae"
+  - name: "m2_vae"
+  - name: "srgan"
+  - name: "semigan"
+  - name: "ssdkl"
+  - name: "autoencoder_regressor"
+  - name: "deterministic_predictor"
+  - name: "probabilistic_predictor"
+
+
+hyperparameter_tuning:
+  - round: 1
+    models:
+    - name: "mlp"
+    - name: "autoencoder"
+    - name: "vae"
+    - name: "m2_vae"
+    - name: "srgan"
+    - name: "semigan"
+    - name: "ssdkl"
+  - round: 2
+    models:
+    - name: "autoencoder_regressor"
+    - name: "deterministic_predictor"
+    - name: "probabilistic_predictor"
+
+datamodules:
+  - name: "skillcraft"
+    features: "18"
+    latent: "2"
+  - name: "parkinson"
+    features: "19"
+    latent: "2"
+  - name: "elevators"
+    features: "18"
+    latent: "2"
+  - name: "protein"
+    features: "9"
+    latent: "2"
+  - name: "blog"
+    features: "276"
+    latent: "2"
+  - name: "ctslice"
+    features: "379"
+    latent: "2"
+  - name: "buzz"
+    features: "77"
+    latent: "2"
+  - name: "electric"
+    features: "6"
+    latent: "2"
+
+  
+     
+    

@@ -1,0 +1,64 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=hyperparameter_search/{{ model_name + "_" + datamodule_name }}.yaml
+
+defaults:
+  - override /datamodule: {{ datamodule_name }}.yaml
+  - override /model: {{ model_name }}.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "{{ model_name }}"
+
+model:
+  {%- if model_name == "mlp" %}
+  in_features: {{ features }}
+  {%- elif model_name == "autoencoder" %}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ latent }}
+  dec_out_features: {{ features }}
+  {%- elif model_name == "autoencoder_regressor" %}
+  reg_in_features: {{ latent }}
+  {%- elif model_name == "vae"%}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ latent }}
+  dec_out_features: {{ features }}
+  {%- elif model_name == "deterministic_predictor" %}
+  reg_in_features: {{ latent }}
+  {%- elif model_name == "probabilistic_predictor" %}
+  reg_in_features: {{ latent }}
+  {%- elif model_name == "m2_vae" %}
+  enc_in_features: {{ add_1(features) }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ add_1(latent) }}
+  dec_out_features: {{ features }}
+  reg_in_features: {{ features }}
+  {%- elif model_name == "srgan" %}
+  gen_out_features: {{ features }}
+  dis_in_features: {{ features }}
+  {%- elif model_name == "semigan" %}
+  dis_x_in_features: {{ features }}
+  dis_xy_in_features: {{ add_1(features) }}
+  gen_x_out_features: {{ features }}
+  inv_in_features: {{ features }}
+  {%- elif model_name == "ssdkl" %}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  {%- endif %}
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "{{ model_name + "_" + datamodule_name }}"
+    tags: 
+      - ${name}
+      - "{{ datamodule_name }}"
+      - "hyperparameter_search"
+    notes: ""
