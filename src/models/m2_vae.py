@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 
 import pytorch_lightning as pl
+from src.models.modules.dense import Fcn, VaeEncoder
 
 from src.models.vae import VariationalAutoencoder
 
@@ -11,19 +12,47 @@ from typing import Any, List
 class M2Predictor(pl.LightningModule):
     def __init__(
         self,
-        encoder,
-        decoder,
-        regressor,
-        alpha,  # the multiplier for the regressor loss
+        enc_in_features,
+        enc_hidden_features,
+        enc_out_features,
+        dec_in_features,
+        dec_hidden_features,
+        dec_out_features,
+        reg_in_features,
+        reg_hidden_features,
+        reg_out_features,
+        regressor_loss_multiplier,  # the multiplier for the regressor loss
+        leaky_relu_slope,
+        dropout_proba,
         lr,
         ) -> None:
 
         super().__init__()
-        self.save_hyperparameters(logger=False, ignore=[encoder, decoder, regressor])
+        self.save_hyperparameters(logger=False)
 
-        self.encoder = encoder
-        self.decoder = decoder
-        self.regressor = regressor
+        self.encoder = VaeEncoder(
+            in_features=enc_in_features,
+            hidden_features=enc_hidden_features,
+            out_features=enc_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        ) 
+        
+        self.decoder = Fcn(
+            in_features=dec_in_features,
+            hidden_features=dec_hidden_features,
+            out_features=dec_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
+
+        self.regressor = Fcn(
+            in_features=reg_in_features,
+            hidden_features=reg_hidden_features,
+            out_features=reg_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
 
         metrics = MetricCollection(
             {
@@ -111,7 +140,7 @@ class M2Predictor(pl.LightningModule):
         _, _, unlabeled_loss = self.negative_elbo(x_unlabeled, x_recon_unlabeled, z_mean_unlabeled, z_logvar_unlabeled)
 
         # add them all up
-        loss = labeled_loss + unlabeled_loss + self.hparams.alpha * regressor_loss
+        loss = labeled_loss + unlabeled_loss + self.hparams.regressor_loss_multiplier * regressor_loss
 
         # TODO log all the other losses
         self.log("train/labeled_loss", labeled_loss, on_step=False, on_epoch=True, prog_bar=False)

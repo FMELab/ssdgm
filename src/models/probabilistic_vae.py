@@ -1,6 +1,7 @@
 import pytorch_lightning as pl
 
 import torch as T
+from src.models.modules.dense import Fcn
 
 from src.models.vae import VariationalAutoencoder
 from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
@@ -10,8 +11,12 @@ class ProbabilisticPredictor(pl.LightningModule):
     def __init__(
         self,
         vae_checkpoint_path,
-        regressor,
+        reg_in_features,
+        reg_hidden_features,
+        reg_out_features,
         regressor_stddev,
+        leaky_relu_slope,
+        dropout_proba,
         lr,
     ) -> None:
         super().__init__()
@@ -21,8 +26,14 @@ class ProbabilisticPredictor(pl.LightningModule):
         self.feature_extractor = VariationalAutoencoder.load_from_checkpoint(vae_checkpoint_path)
         self.feature_extractor.freeze()
 
-        self.regressor = regressor
 
+        self.regressor = Fcn(
+            in_features=reg_in_features,
+            hidden_features=reg_hidden_features,
+            out_features=reg_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
 
         metrics = MetricCollection(
             {

@@ -9,19 +9,39 @@ from torch.optim import Adam
 
 from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
+from src.models.modules.dense import Fcn
+
 class SRGAN(pl.LightningModule):
     def __init__(
         self,
-        generator,
-        discriminator,
-        latent_dim,
+        gen_in_features,
+        gen_hidden_features,
+        gen_out_features,
+        dis_in_features,
+        dis_hidden_features,
+        dis_out_features,
         gradient_penalty_multiplier: float,
+        leaky_relu_slope,
+        dropout_proba,
         lr: float,
     ) -> None:
         super().__init__()
 
-        self.generator = generator
-        self.discriminator = discriminator
+        self.generator = Fcn(
+            gen_in_features,
+            gen_hidden_features,
+            gen_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+        
+        self.discriminator = Fcn(
+            dis_in_features,
+            dis_hidden_features,
+            dis_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
 
         self.save_hyperparameters(logger=False)
 
@@ -114,7 +134,7 @@ class SRGAN(pl.LightningModule):
         _, features_unlabeled = self.forward(x_unlabeled)
 
         # sample noise
-        z = torch.randn(x_unlabeled.size(0), self.hparams.latent_dim)
+        z = torch.randn(x_unlabeled.size(0), self.hparams.gen_in_features)
         z = z.type_as(x_unlabeled)
 
         # Fake examples

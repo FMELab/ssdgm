@@ -7,19 +7,42 @@ from torch.optim import Adam
 
 from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
+from src.models.modules.dense import Fcn, VaeEncoder
+
 class VariationalAutoencoder(pl.LightningModule):
     def __init__(
         self,
-        encoder,
-        decoder,
+        enc_in_features,
+        enc_hidden_features,
+        enc_out_features,
+        dec_in_features,
+        dec_hidden_features,
+        dec_out_features,
+        regularization_loss_multiplier,
+        leaky_relu_slope,
+        dropout_proba,
         lr,
     ) -> None:
         super().__init__()
 
         self.save_hyperparameters(logger=False)#, ignore=["encoder", "decoder"])
 
-        self.encoder = encoder
-        self.decoder = decoder
+        self.encoder = VaeEncoder(
+            enc_in_features,
+            enc_hidden_features,
+            enc_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.decoder = Fcn(
+            dec_in_features,
+            dec_hidden_features,
+            dec_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
         self.lr = lr
         
         metrics = MetricCollection(
@@ -66,7 +89,7 @@ class VariationalAutoencoder(pl.LightningModule):
 
         reg_loss = T.mean(0.5 * T.sum(mu_squared + var - 1 - log_var, dim=1))
 
-        elbo = rec_loss + 0.05 * reg_loss
+        elbo = rec_loss + self.hparams.regularization_loss_multiplier * reg_loss
         return rec_loss, reg_loss, elbo
 
 

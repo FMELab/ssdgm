@@ -1,4 +1,5 @@
 from src.models.modules.dkl import DeepKernelLearning
+from src.models.modules.dense import Fcn
 
 import pytorch_lightning as pl
 import torch
@@ -13,17 +14,27 @@ debug_list = []
 class SemiSupervisedDeepKernelLearning(pl.LightningModule):
     def __init__(
         self,
-        feature_extractor,
-        likelihood=gpytorch.likelihoods.GaussianLikelihood(),
-        variance_loss_multiplier=1.0,
+        enc_in_features,
+        enc_hidden_features,
+        enc_out_features,
+        variance_loss_multiplier,
+        leaky_relu_slope,
+        dropout_proba,
         lr=0.01,
     ):
         super().__init__()
 
         self.save_hyperparameters(logger=False)
 
-        self.likelihood = likelihood
-        self.feature_extractor = feature_extractor
+        self.likelihood = gpytorch.likelihoods.GaussianLikelihood()
+
+        self.encoder = Fcn(
+            enc_in_features,
+            enc_hidden_features,
+            enc_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
 
         metrics = MetricCollection(
             {
@@ -46,14 +57,14 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x_labeled, y = batch["labeled"]
-        #y = y[:, None]
+        y = y.flatten()
 
         x_unlabeled, _ = batch["unlabeled"]
 
         if self.current_epoch == 0 and batch_idx == 0:
-            self.dkl_model = DeepKernelLearning(x_labeled, y, self.likelihood, self.feature_extractor)
-            if torch.cuda.is_available():
-                self.dkl_model = self.dkl_model.cuda()
+            self.dkl_model = DeepKernelLearning(x_labeled, y, self.likelihood, self.encoder)
+            #if torch.cuda.is_available():
+            #    self.dkl_model = self.dkl_model.cuda()
         
 
 
@@ -82,12 +93,14 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
         return loss
 
 
+
     def on_validation_epoch_start(self):
         self.dkl_model.eval()
         self.valid_metrics.increment()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
+        y = y.flatten()
 
         output_distribution = self.forward(x)
         y_hat = output_distribution.mean
@@ -108,6 +121,7 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         x, y = batch
+        y = y.flatten()
 
         output_distribution = self.forward(x)
         y_hat = output_distribution.mean

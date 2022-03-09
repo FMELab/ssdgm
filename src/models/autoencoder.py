@@ -5,20 +5,40 @@ from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
 import torch
 
+from src.models.modules.dense import Decoder, Encoder, Fcn
 
 class Autoencoder(pl.LightningModule):
     def __init__(
         self,
-        encoder,
-        decoder,
+        enc_in_features,
+        enc_hidden_features,
+        enc_out_features,
+        dec_in_features,
+        dec_hidden_features,
+        dec_out_features,
+        leaky_relu_slope,
+        dropout_proba,
         lr: float = 0.001,
     ) -> None:
         super().__init__()
 
         self.save_hyperparameters(logger=False)
 
-        self.encoder = encoder
-        self.decoder = decoder
+        self.encoder = Fcn(
+            in_features=enc_in_features,
+            hidden_features=enc_hidden_features,
+            out_features=enc_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        ) 
+        
+        self.decoder = Fcn(
+            in_features=dec_in_features,
+            hidden_features=dec_hidden_features,
+            out_features=dec_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
 
         self.criterion = torch.nn.MSELoss()
 

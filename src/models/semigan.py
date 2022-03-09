@@ -8,16 +8,30 @@ import torch.nn.functional as F
 
 from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 
+from src.models.modules.dense import DenseNetFcn, Fcn
+
 class SemiGAN(pl.LightningModule):
     def __init__(
         self,
-        discriminator_x,  # D_x
-        discriminator_y,  # D_y
-        discriminator_xy,  # D_xy
-        generator_x,  # G_x
-        generator_y,  # G_y
-        inverse_net,  # I_x 
-        inference_net,  # F 
+        dis_x_in_features, # D_x
+        dis_x_hidden_features,
+        dis_x_out_features,
+        dis_y_in_features,  # D_y
+        dis_y_hidden_features,
+        dis_y_out_features,
+        dis_xy_in_features,  # D_xy
+        dis_xy_hidden_features,
+        dis_xy_out_features,
+        gen_x_hidden_features,  # G_x
+        gen_x_out_features,
+        gen_y_hidden_features, # G_y
+        gen_y_out_features,
+        inv_in_features,  # I_x 
+        inv_hidden_features,
+        infer_in_features,  # F 
+        infer_hidden_features,
+        infer_out_features,
+        latent_features, # for the generators
         dis_x_multiplier,  # λ_D_x 
         dis_y_multiplier,  # λ_D_y
         dis_xy_multiplier,  # λ_D_xy
@@ -29,28 +43,70 @@ class SemiGAN(pl.LightningModule):
         inverse_multiplier,  # λ_inv
         synthesized_multiplier,  # λ_syn
         consistency_multiplier,  # λ_con
+        leaky_relu_slope,
+        dropout_proba,
         lr: float = 0.001,
-        latent_size: int = 100, # for the generators
         sufficient_inference_epoch: int = 10,  # from this epoch on we assume that the inference network delivers good enough predictions
     ) -> None:
         super().__init__()
 
-        self.dis_x  = discriminator_x
-        self.dis_y  = discriminator_y
-        self.dis_xy = discriminator_xy
-        self.gen_x  = generator_x
-        self.gen_y  = generator_y
-        self.inv    = inverse_net
-        self.infer  = inference_net
-
-        self.save_hyperparameters(
-            logger=False,
-            ignore=["discriminator_x", "discriminator_y", "discriminator_xy",
-                    "generator_x", "generator_y",
-                    "inverse_net",
-                    "inference_net"
-                    ]
+        self.dis_x  = Fcn(
+            dis_x_in_features,
+            dis_x_hidden_features,
+            dis_x_out_features,
+            leaky_relu_slope,
+            dropout_proba,
         )
+
+        self.dis_y  = Fcn(
+            dis_y_in_features,
+            dis_y_hidden_features,
+            dis_y_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.dis_xy = Fcn(
+            dis_xy_in_features,
+            dis_xy_hidden_features,
+            dis_xy_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.gen_x  = Fcn(
+            latent_features,
+            gen_x_hidden_features,
+            gen_x_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.gen_y  = Fcn(
+            latent_features,
+            gen_y_hidden_features,
+            gen_y_out_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.inv    = Fcn(
+            inv_in_features,
+            inv_hidden_features,
+            latent_features,
+            leaky_relu_slope,
+            dropout_proba,
+        )
+
+        self.infer  = DenseNetFcn(
+            infer_in_features,
+            infer_hidden_features,
+            infer_out_features,
+            leaky_relu_slope,
+            dropout_proba
+        )
+
+        self.save_hyperparameters(logger=False)
 
         #TODO: initialize all SemiGAN parameters with Xavier; implement a function for it!
 
@@ -207,7 +263,7 @@ class SemiGAN(pl.LightningModule):
         bsz_unlabeled = x_unlabeled.size(0)
 
         # Sample noise
-        z = torch.randn(x_unlabeled.shape[0], self.hparams.latent_size)
+        z = torch.randn(x_unlabeled.shape[0], self.hparams.latent_features)
         z = z.type_as(x_unlabeled)
 
         y_hat = self.forward(x_labeled)  # We need this line just for logging the metrics during training

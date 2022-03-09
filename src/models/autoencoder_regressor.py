@@ -15,8 +15,12 @@ class AutoencoderRegressor(pl.LightningModule):
     def __init__(
         self,
         #feature_extractor: Autoencoder,
-        checkpoint_path: str,  
-        regressor: Fcn,
+        checkpoint_path,  
+        reg_in_features,
+        reg_hidden_features,
+        reg_out_features,
+        leaky_relu_slope,
+        dropout_proba,
         lr: float = 0.001,
     ) -> None:
         super().__init__()
@@ -26,7 +30,13 @@ class AutoencoderRegressor(pl.LightningModule):
         self.feature_extractor = Autoencoder.load_from_checkpoint(checkpoint_path)
         self.feature_extractor.freeze()
         
-        self.regressor = regressor
+        self.regressor = Fcn(
+            in_features=reg_in_features,
+            hidden_features=reg_hidden_features,
+            out_features=reg_out_features,
+            leaky_relu_slope=leaky_relu_slope,
+            dropout_proba=dropout_proba
+        )
 
 
         metrics = MetricCollection(
