@@ -18,8 +18,9 @@ class BaseDataModule(LightningDataModule):
             self,
             data_dir: str = "data/",
             batch_size: int = 64,
-            split_mode: str = "relative",
-            split: List[int] = [0.8, 0.05, 0.9],
+            n_samples_train_labeled: int = 500,
+            val_proportion: float = 0.1,
+            n_samples_test: int = 1000,
             train_ssdkl = False,
             num_workers: int = 0,
             pin_memory: bool = False,
@@ -33,8 +34,7 @@ class BaseDataModule(LightningDataModule):
 
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.split_mode = split_mode
-        self.split = split
+
         self.train_ssdkl = train_ssdkl
         self.num_workers = num_workers
         self.pin_memory = pin_memory
@@ -64,27 +64,16 @@ class BaseDataModule(LightningDataModule):
             self.dims = self.dataset.data.size()
             n_samples= self.dims[0]
 
-            if self.split_mode == "relative":
-                # calculate the split of train vs test samples
-                n_samples_train = int(self.split[0] * n_samples)
-                n_samples_test = n_samples - n_samples_train
+            n_samples_test = self.hparams.n_samples_test
+            n_samples_val = int(self.hparams.val_proportion * self.hparams.n_samples_train_labeled)
+            n_samples_train_labeled = self.hparams.n_samples_train_labeled - n_samples_val
+            n_samples_train_unlabeled = n_samples - (n_samples_train_labeled + n_samples_val + n_samples_test)
 
-                # calculate the split of labeled vs unlabeled train samples
-                n_samples_labeled = int(self.split[1] * n_samples_train)
-                n_samples_train_unlabeled = n_samples_train - n_samples_labeled
+            split_lengths = [
+                            n_samples_train_labeled, n_samples_train_unlabeled,
+                            n_samples_val, n_samples_test
+            ]
 
-                # calculate the split of labeled train samples vs validation samples
-                n_samples_train_labeled = int(self.split[2] * n_samples_labeled) 
-                n_samples_val = n_samples_labeled - n_samples_train_labeled 
-
-                split_lengths = [
-                                n_samples_train_labeled, n_samples_train_unlabeled,
-                                n_samples_val, n_samples_test
-                ]
-
-            # TODO: Implement the logic for the case when we want to specify a concrete number of labeleled train samples
-            if self.split_mode == "absolute":
-                pass
             
             # We have to do this to ensure the same batch size for unlabeled and labeled examples in SSDKL
             if self.train_ssdkl:# and self.batch_size == 'None':
