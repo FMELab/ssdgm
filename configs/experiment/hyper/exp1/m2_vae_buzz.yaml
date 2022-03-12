@@ -24,7 +24,7 @@ seed: 42
 
 logger:
   wandb:
-    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    name: ${name}/${dataset}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "hyperparameter_search"
     group: "m2_vae_buzz"
     tags: 
