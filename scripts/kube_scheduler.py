@@ -22,9 +22,9 @@ def start_config(args, info, yaml, dry_run=True):
         if args.round == round["round"]:
             for model in round["models"]:
                 for datamodule in info["exp"]["datamodules"]:  
-                    yaml["job_name"] = f"{job_name_base_string}|{model['name']}-{datamodule['name']}"
+                    yaml["job_name"] = f"{job_name_base_string}-{model['name']}-{datamodule['name']}"
                     args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"]
-                    output_text = template.render(args_str=args_str, **yaml)
+                    output_text = template.render(args_str=args_str, datamodule_name=datamodule["name"], **yaml)
                     print(output_text)
                     if not dry_run:
                         command = "kubectl -n studerhard create -f -"
@@ -56,9 +56,10 @@ if __name__ == '__main__':
 
     # Arguments which will be passed to the python script. Boolean flags will be automatically set to "--key" (if True)
     yaml_dict = {
-        "job_name": "{}|{}".format("hparams-search", date_time),
+        "job_name": "{}".format("hparams-search"),
         "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.3",
         "cpus": 8,
+        "cpus_big_datasets": 16,
         "memory": 4,
         "use_gpu": False,
         "script_path": "/workspace/ssdgm/train.py"
