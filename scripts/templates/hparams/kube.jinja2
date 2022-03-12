@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: {{ job_name }}|
+  generateName: {{ job_name }}-
 spec:
   backoffLimit: 0
   template:
@@ -25,21 +25,37 @@ spec:
             - name: MPLCONFIGDIR
               value: "/workspace/ssdgm/.config/matplotlib"
             - name: MKL_NUM_THREADS
+              {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
+              value: {{ cpus_big_datasets }}
+              {%- else %}
               value: {{ cpus }}
+              {%- endif%}
             - name: OMP_NUM_THREADS
+              {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
+              value: {{ cpus_big_datasets}}
+              {%- else %}
               value: {{ cpus }}
+              {%- endif%}
           resources:
             limits:
               {%- if use_gpu %}
               nvidia.com/gpu: "1"
               {%- endif %}
+              {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
+              cpu: "{{ cpus_big_datasets}}"
+              {%- else %}
               cpu: "{{ cpus }}"
+              {%- endif%}
               memory: "{{ memory }}Gi"
             requests:
               {%- if use_gpu %}
               nvidia.com/gpu: "1"
               {%- endif %}
+              {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
+              cpu: "{{ cpus_big_datasets}}"
+              {%- else %}
               cpu: "{{ cpus }}"
+              {%- endif%}
               memory: "{{ memory }}Gi"
           volumeMounts:
             - mountPath: /workspace/ssdgm
