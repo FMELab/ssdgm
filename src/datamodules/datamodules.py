@@ -21,7 +21,8 @@ class BaseDataModule(LightningDataModule):
             n_samples_train_labeled: int = 500,
             val_proportion: float = 0.1,
             n_samples_test: int = 1000,
-            train_ssdkl = False,
+            use_unlabeled_dataloader: bool = True,
+            train_ssdkl: bool = False,
             num_workers: int = 0,
             pin_memory: bool = False,
     ):
@@ -82,7 +83,7 @@ class BaseDataModule(LightningDataModule):
             self.data_train_labeled, self.data_train_unlabeled, self.data_val, self.data_test = random_split(
                                                 dataset=self.dataset,
                                                 lengths=split_lengths,
-                                                #generator=torch.Generator().manual_seed(42),
+                                                generator=torch.Generator().manual_seed(42),
             )
             params_dict = self._calc_standardization_params()
 
@@ -124,15 +125,20 @@ class BaseDataModule(LightningDataModule):
             shuffle=False,
         )
 
-        loader_unlabeled = DataLoader(
-            dataset=self.data_train_unlabeled,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-            pin_memory=self.pin_memory,
-            shuffle=False,
-        )
+        dataloaders = {"labeled": loader_labeled}
 
-        return {"labeled": loader_labeled, "unlabeled": loader_unlabeled}
+        if self.hparams.use_unlabeled_dataloader:
+            loader_unlabeled = DataLoader(
+                dataset=self.data_train_unlabeled,
+                batch_size=self.batch_size,
+                num_workers=self.num_workers,
+                pin_memory=self.pin_memory,
+                shuffle=False,
+            )
+
+            dataloaders["unlabeled"] = loader_unlabeled
+
+        return dataloaders
 
     def val_dataloader(self) -> EVAL_DATALOADERS:
         return DataLoader(
