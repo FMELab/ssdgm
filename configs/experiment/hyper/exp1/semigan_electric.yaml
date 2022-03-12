@@ -1,0 +1,38 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_semigan experiment=hyper/exp1/semigan_electric.yaml
+
+defaults:
+  - override /datamodule: electric.yaml
+  - override /model: semigan.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "semigan"
+dataset: "electric"
+
+model:
+  dis_x_in_features: 6
+  dis_xy_in_features: 7
+  gen_x_out_features: 6
+  inv_in_features: 6
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "semigan_electric"
+    tags: 
+      - ${name}
+      - "electric"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp1/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}

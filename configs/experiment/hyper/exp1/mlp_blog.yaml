@@ -1,0 +1,37 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_mlp experiment=hyper/exp1/mlp_blog.yaml
+
+defaults:
+  - override /datamodule: blog.yaml
+  - override /model: mlp.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "mlp"
+dataset: "blog"
+datamodule:
+  use_unlabeled_dataloader: False
+
+model:
+  in_features: 276
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "mlp_blog"
+    tags: 
+      - ${name}
+      - "blog"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp1/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}

@@ -1,0 +1,39 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_m2_vae experiment=hyper/exp1/m2_vae_buzz.yaml
+
+defaults:
+  - override /datamodule: buzz.yaml
+  - override /model: m2_vae.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: experiment.yaml
+
+name: "m2_vae"
+dataset: "buzz"
+
+model:
+  enc_in_features: 78
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 77
+  reg_in_features: 77
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "m2_vae_buzz"
+    tags: 
+      - ${name}
+      - "buzz"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp1/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
