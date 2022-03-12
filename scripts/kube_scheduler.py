@@ -8,20 +8,22 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 DATETIME_FORMAT = "%Y-%m-%d-%H-%M-%S"
-TEMPLATE_FILE = "hparams_exp_kube.jinja2"
+TEMPLATE_FILE = "hparams/kube.jinja2"
 
 
 
 
-def start_config(current_round, info, yaml, dry_run=True):
+def start_config(args, info, yaml, dry_run=True):
     template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
     template = Environment(loader=FileSystemLoader(template_path)).get_template(TEMPLATE_FILE)
 
-    for round in info["hyperparameter_tuning"]:
-        if current_round == round["round"]:
+    job_name_base_string = yaml["job_name"]
+    for round in info["hyper"]["hyperparameter_tuning"]:
+        if args.round == round["round"]:
             for model in round["models"]:
-                for datamodule in info["datamodules"]:
-                    args_str = "-m hparams_search=optuna_" + model["name"] + " experiment=hyperparameter_search/" + model["name"] + "_" + datamodule["name"]
+                for datamodule in info["exp"]["datamodules"]:  
+                    yaml["job_name"] = f"{job_name_base_string}|{model['name']}-{datamodule['name']}"
+                    args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"]
                     output_text = template.render(args_str=args_str, **yaml)
                     print(output_text)
                     if not dry_run:
@@ -34,25 +36,33 @@ def start_config(current_round, info, yaml, dry_run=True):
 
 if __name__ == '__main__':
     parser = ArgumentParser()
+    # `--round` is needed because 3 models (AE+R, VAE+detR, VAE+probR) 
+    # depend on fully trained components (AE, VAE) before the remaining 
+    # component can be trained
     parser.add_argument("--round")
+    parser.add_argument("--experiment_name")
     args = parser.parse_args()
 
-    current_round = int(args.round)
 
     date_time = datetime.now().strftime(DATETIME_FORMAT)
 
-    with open("scripts/yamls/info.yaml") as file:
-        info_dict = yaml.safe_load(file)
+    with open("scripts/yamls/hyper_info.yaml") as file:
+        hyper_info_dict = yaml.safe_load(file)
+
+    with open("scripts/yamls/exp_info.yaml") as file:
+        exp_info_dict = yaml.safe_load(file)
+
+    info_dict = {"hyper": hyper_info_dict, "exp": exp_info_dict}
 
     # Arguments which will be passed to the python script. Boolean flags will be automatically set to "--key" (if True)
     yaml_dict = {
-        "job_name": "{}-{}d".format("hyperparameter_search", date_time),
-        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.1",
+        "job_name": "{}|{}".format("hparams-search", date_time),
+        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.3",
         "cpus": 8,
         "memory": 4,
         "use_gpu": False,
-        "script_path": "/ssdgm/train.py"
+        "script_path": "/workspace/ssdgm/train.py"
     }
 
 
-    start_config(current_round, info_dict, yaml_dict, dry_run=True)
+    start_config(args, info_dict, yaml_dict, dry_run=True)

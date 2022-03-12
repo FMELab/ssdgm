@@ -1,0 +1,15 @@
+hyperparameter_tuning:
+  - round: "1"
+    models:
+    - name: "mlp"
+    - name: "autoencoder"
+    - name: "vae"
+    - name: "m2_vae"
+    - name: "srgan"
+    - name: "semigan"
+    - name: "ssdkl"
+  - round: "2"
+    models:
+    - name: "autoencoder_regressor"
+    - name: "deterministic_predictor"
+    - name: "probabilistic_predictor"

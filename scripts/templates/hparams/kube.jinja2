@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: {{ job_name }}-
+  generateName: {{ job_name }}|
 spec:
   backoffLimit: 0
   template:
@@ -24,8 +24,10 @@ spec:
               value: "/workspace/ssdgm/.cache/wandb"
             - name: MPLCONFIGDIR
               value: "/workspace/ssdgm/.config/matplotlib"
-            - name: NUM_PYTORCH_THREADS
-              value: 8
+            - name: MKL_NUM_THREADS
+              value: {{ cpus }}
+            - name: OMP_NUM_THREADS
+              value: {{ cpus }}
           resources:
             limits:
               {%- if use_gpu %}
