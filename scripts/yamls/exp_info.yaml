@@ -2,13 +2,13 @@ models:
   - name: "mlp"
   - name: "autoencoder"
   - name: "vae"
-  - name: "m2_vae"
+  - name: "m2vae"
   - name: "srgan"
   - name: "semigan"
   - name: "ssdkl"
-  - name: "autoencoder_regressor"
-  - name: "deterministic_predictor"
-  - name: "probabilistic_predictor"
+  - name: "autoencoderregressor"
+  - name: "deterministicpredictor"
+  - name: "probabilisticpredictor"
 
 datamodules:
 - name: "skillcraft"

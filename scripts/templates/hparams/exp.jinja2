@@ -52,6 +52,7 @@ model:
   dis_xy_in_features: {{ add_1(features) }}
   gen_x_out_features: {{ features }}
   inv_in_features: {{ features }}
+  infer_in_features: {{ features }}
   {%- elif model_name == "ssdkl" %}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}

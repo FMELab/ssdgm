@@ -25,14 +25,14 @@ def start_config(args, info, yaml, dry_run=True):
                     yaml["job_name"] = f"{job_name_base_string}-{model['name']}-{datamodule['name']}"
                     args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"]
                     output_text = template.render(args_str=args_str, datamodule_name=datamodule["name"], **yaml)
-                    print(output_text)
+                    #print(output_text)
                     if not dry_run:
-                        command = "kubectl -n studerhard create -f -"
-                        p = subprocess.Popen(command.split(), stdin=subprocess.PIPE)
-                        p.communicate(output_text.encode())
-                
-                break
-        break
+                        try:
+                            command = "kubectl -n studerhard create -f -"
+                            p = subprocess.Popen(command.split(), stdin=subprocess.PIPE)
+                            p.communicate(output_text.encode())
+                        except:
+                            print(f'Could not start job for {model["name"]} - {datamodule["name"]}')
 
 if __name__ == '__main__':
     parser = ArgumentParser()
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # Arguments which will be passed to the python script. Boolean flags will be automatically set to "--key" (if True)
     yaml_dict = {
         "job_name": "{}".format("hparams-search"),
-        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.3",
+        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.4",
         "cpus": 8,
         "cpus_big_datasets": 16,
         "memory": 4,
@@ -66,4 +66,4 @@ if __name__ == '__main__':
     }
 
 
-    start_config(args, info_dict, yaml_dict, dry_run=True)
+    start_config(args, info_dict, yaml_dict, dry_run=False)

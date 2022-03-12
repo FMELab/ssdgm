@@ -1,24 +1,19 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py -m hparams_search=optuna_semigan experiment=hyper/exp1/semigan_protein.yaml
+# python train.py -m hparams_search=optuna_deterministicpredictor experiment=hyper/exp1/deterministicpredictor_parkinson.yaml
 
 defaults:
-  - override /datamodule: protein.yaml
-  - override /model: semigan.yaml
+  - override /datamodule: parkinson.yaml
+  - override /model: deterministicpredictor.yaml
   - override /callbacks: default.yaml
   - override /logger: wandb.yaml
   - override /trainer: experiment.yaml
 
-name: "semigan"
-dataset: "protein"
+name: "deterministicpredictor"
+dataset: "parkinson"
 
 model:
-  dis_x_in_features: 9
-  dis_xy_in_features: 10
-  gen_x_out_features: 9
-  inv_in_features: 9
-  infer_in_features: 9
 
 seed: 42
 
@@ -26,10 +21,10 @@ logger:
   wandb:
     name: ${name}/${dataset}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "hyperparameter_search"
-    group: "semigan_protein"
+    group: "deterministicpredictor_parkinson"
     tags: 
       - ${name}
-      - "protein"
+      - "parkinson"
       - "hyperparameter_search"
     notes: ""
 

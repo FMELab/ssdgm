@@ -18,6 +18,7 @@ model:
   dis_xy_in_features: 7
   gen_x_out_features: 6
   inv_in_features: 6
+  infer_in_features: 6
 
 seed: 42
 

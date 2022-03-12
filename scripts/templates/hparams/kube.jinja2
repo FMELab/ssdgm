@@ -26,15 +26,15 @@ spec:
               value: "/workspace/ssdgm/.config/matplotlib"
             - name: MKL_NUM_THREADS
               {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
-              value: {{ cpus_big_datasets }}
+              value: "{{ cpus_big_datasets }}"
               {%- else %}
-              value: {{ cpus }}
+              value: "{{ cpus }}"
               {%- endif%}
             - name: OMP_NUM_THREADS
               {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
-              value: {{ cpus_big_datasets}}
+              value: "{{ cpus_big_datasets}}"
               {%- else %}
-              value: {{ cpus }}
+              value: "{{ cpus }}"
               {%- endif%}
           resources:
             limits:
