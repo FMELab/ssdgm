@@ -116,15 +116,15 @@ class Skillcraft(Dataset):
     def _save_data(self, data) -> None:
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'wb') as f:
         #    np.save(f, data)
-        data.to_csv(os.path.join(self.processed_folder, self.dataset_file))
+        data.to_csv(os.path.join(self.processed_folder, self.dataset_file), index=False)
 
     def _load_data(self):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
-        data = torch.from_numpy(dataset.loc[:, dataset.columns != "LeagueIndex"].to_numpy())
+        data = torch.from_numpy((dataset.loc[:, dataset.columns != "LeagueIndex"]).to_numpy())
         target = torch.from_numpy(dataset.loc[:, "LeagueIndex"].to_numpy())
 
         return data, target[:, None]  #! It is essential to do this in each dataset!  
@@ -212,7 +212,7 @@ class Parkinson(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset[dataset.columns[~dataset.columns.isin([self.target_to_keep])]].to_numpy())
         target = torch.from_numpy(dataset[self.target_to_keep].to_numpy())
@@ -258,7 +258,7 @@ class Elevators(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
@@ -296,7 +296,7 @@ class Protein(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, 1:].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, 0].to_numpy())
@@ -337,7 +337,7 @@ class Blog(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
@@ -380,7 +380,7 @@ class CTSlice(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
@@ -427,7 +427,7 @@ class Buzz(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
@@ -471,7 +471,7 @@ class Electric(Skillcraft):
         #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
         #    dataset = np.load(f, allow_pickle=True)
         #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file), dtype=np.float32)
 
         data = torch.from_numpy(dataset.iloc[:, 1:].to_numpy())
         target = torch.from_numpy(dataset.iloc[:, 0].to_numpy())
@@ -481,16 +481,16 @@ class Electric(Skillcraft):
 if __name__ == "__main__":
     root = os.path.join(os.getcwd(), "data")
     print(root)
-    download = False
+    download = True
     datasets = [
-        Skillcraft(root, download),
-        Parkinson(root, download),
-        Elevators(root, download),
-        Protein(root, download),
-        Blog(root, download),
-        CTSlice(root, download),
-        Buzz(root, download),
-        Electric(root, download),
+        Skillcraft(root, download=download),
+        Parkinson(root, download=download),
+        Elevators(root, download=download),
+        Protein(root, download=download),
+        Blog(root, download=download),
+        CTSlice(root, download=download),
+        Buzz(root, download=download),
+        Electric(root, download=download),
     ]
     for ds in datasets:
         print(f"no. of samples for {ds.dataset_file}: {len(ds)}")
