@@ -47,8 +47,8 @@ hydra:
       model.leaky_relu_slope:
         type: float
         low: 0.01
-        high: 0.99
-        step: 0.1
+        high: 0.20
+        step: 0.05
       model.dropout_proba:
        type: float
        low: 0.1
@@ -71,7 +71,7 @@ hydra:
         low: 1e-2
         high: 1e0
         log: True
-      {%- elif model_name == "m2_vae" %}
+      {%- elif model_name == "m2vae" %}
       model.regressor_loss_multiplier:
         type: float
         low: 1e-3

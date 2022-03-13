@@ -47,8 +47,8 @@ hydra:
       model.leaky_relu_slope:
         type: float
         low: 0.01
-        high: 0.99
-        step: 0.1
+        high: 0.20
+        step: 0.05
       model.dropout_proba:
        type: float
        low: 0.1
@@ -58,4 +58,9 @@ hydra:
         type: float
         low: 1e-5
         high: 1e-2
+        log: True
+      model.regressor_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
         log: True

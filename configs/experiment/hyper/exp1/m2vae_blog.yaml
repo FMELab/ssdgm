@@ -14,6 +14,11 @@ name: "m2vae"
 dataset: "blog"
 
 model:
+  enc_in_features: 277
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 276
+  reg_in_features: 276
 
 seed: 42
 

@@ -12,8 +12,11 @@ defaults:
 
 name: "deterministicpredictor"
 dataset: "ctslice"
+datamodule:
+  use_unlabeled_dataloader: False
 
 model:
+  reg_in_features: 2
 
 seed: 42
 

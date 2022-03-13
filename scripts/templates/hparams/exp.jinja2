@@ -14,7 +14,7 @@ name: "{{ model_name }}"
 dataset: "{{ datamodule_name }}"
 
 
-{%- if model_name == "mlp" or model_name == "autoencoder_regressor" or model_name == "deterministic_predictor" or model_name == "probabilistic_predictor" %}
+{%- if model_name == "mlp" or model_name == "autoencoderregressor" or model_name == "deterministicpredictor" or model_name == "probabilisticpredictor" %}
 datamodule:
   use_unlabeled_dataloader: False
 {%- endif %}
@@ -27,18 +27,18 @@ model:
   enc_out_features: {{ latent }}
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
-  {%- elif model_name == "autoencoder_regressor" %}
+  {%- elif model_name == "autoencoderregressor" %}
   reg_in_features: {{ latent }}
   {%- elif model_name == "vae"%}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
-  {%- elif model_name == "deterministic_predictor" %}
+  {%- elif model_name == "deterministicpredictor" %}
   reg_in_features: {{ latent }}
-  {%- elif model_name == "probabilistic_predictor" %}
+  {%- elif model_name == "probabilisticpredictor" %}
   reg_in_features: {{ latent }}
-  {%- elif model_name == "m2_vae" %}
+  {%- elif model_name == "m2vae" %}
   enc_in_features: {{ add_1(features) }}
   enc_out_features: {{ latent }}
   dec_in_features: {{ add_1(latent) }}

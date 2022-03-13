@@ -14,6 +14,11 @@ name: "m2vae"
 dataset: "buzz"
 
 model:
+  enc_in_features: 78
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 77
+  reg_in_features: 77
 
 seed: 42
 

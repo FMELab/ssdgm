@@ -61,6 +61,7 @@ if __name__ == '__main__':
         "cpus": 8,
         "cpus_big_datasets": 16,
         "memory": 4,
+        "memory_big_datasets": 16,
         "use_gpu": False,
         "script_path": "/workspace/ssdgm/train.py"
     }

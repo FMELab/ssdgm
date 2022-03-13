@@ -42,21 +42,23 @@ spec:
               nvidia.com/gpu: "1"
               {%- endif %}
               {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
-              cpu: "{{ cpus_big_datasets}}"
+              cpu: "{{ cpus_big_datasets }}"
+              memory: "{{ memory_big_datasets }}"
               {%- else %}
               cpu: "{{ cpus }}"
-              {%- endif%}
               memory: "{{ memory }}Gi"
+              {%- endif%}
             requests:
               {%- if use_gpu %}
               nvidia.com/gpu: "1"
               {%- endif %}
               {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
               cpu: "{{ cpus_big_datasets}}"
+              memory: "{{ memory_big_datasets }}Gi"
               {%- else %}
               cpu: "{{ cpus }}"
-              {%- endif%}
               memory: "{{ memory }}Gi"
+              {%- endif%}
           volumeMounts:
             - mountPath: /workspace/ssdgm
               name: localdir

@@ -14,6 +14,11 @@ name: "m2vae"
 dataset: "skillcraft"
 
 model:
+  enc_in_features: 19
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 18
+  reg_in_features: 18
 
 seed: 42
 
