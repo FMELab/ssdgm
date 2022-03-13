@@ -43,7 +43,7 @@ spec:
               {%- endif %}
               {%- if datamodule_name == "buzz" or datamodule_name == "electric" %}
               cpu: "{{ cpus_big_datasets }}"
-              memory: "{{ memory_big_datasets }}"
+              memory: "{{ memory_big_datasets }}Gi"
               {%- else %}
               cpu: "{{ cpus }}"
               memory: "{{ memory }}Gi"
