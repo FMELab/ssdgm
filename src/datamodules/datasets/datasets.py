@@ -17,7 +17,7 @@ class Skillcraft(Dataset):
 
     files_to_read = resources
 
-    dataset_file = "skillcraft.csv"
+    dataset_file = "skillcraft.npy"
 
 
     def __init__(
@@ -105,27 +105,20 @@ class Skillcraft(Dataset):
         idx = dataset[dataset['HoursPerWeek'] > dataset['TotalHours']].index
         dataset = dataset.drop(idx)
 
-        #features = dataset.loc[:, dataset.columns != "LeagueIndex"].to_numpy()
-        #target = dataset.loc[:, "LeagueIndex"].to_numpy()
+        features = dataset.loc[:, dataset.columns != "LeagueIndex"].to_numpy()
+        target = dataset.loc[:, "LeagueIndex"].to_numpy()
 
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #dataset = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
         
     def _save_data(self, data) -> None:
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'wb') as f:
-        #    np.save(f, data)
-        data.to_csv(os.path.join(self.processed_folder, self.dataset_file))
+        np.save(os.path.join(self.processed_folder, self.dataset_file), data)
 
     def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.loc[:, dataset.columns != "LeagueIndex"].to_numpy())
-        target = torch.from_numpy(dataset.loc[:, "LeagueIndex"].to_numpy())
+        dataset = np.load(os.path.join(self.processed_folder, self.dataset_file))
+        data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
 
         return data, target[:, None]  #! It is essential to do this in each dataset!  
 
@@ -186,7 +179,7 @@ class Parkinson(Skillcraft):
     target_to_keep = "total_UPDRS"
     target_to_drop = "motor_UPDRS"
 
-    dataset_file = "parkinson.csv"
+    dataset_file = "parkinson.npy"
     
     def _download_data(self, url, root):
         download_url(url, root)
@@ -194,30 +187,20 @@ class Parkinson(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
+        data_set = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
         
-        dataset.drop(["subject#"], axis=1, inplace=True)
-        dataset.drop([self.target_to_drop], axis=1, inplace=True)
+        data_set.drop(["subject#"], axis=1, inplace=True)
+        data_set.drop([self.target_to_drop], axis=1, inplace=True)
 
-        dataset = dataset.astype(np.float32)
+        data_set = data_set.astype(np.float32)
 
+        features = data_set[data_set.columns[~data_set.columns.isin([self.target_to_keep])]].to_numpy()
+        target = data_set[self.target_to_keep].to_numpy()
         
-        
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-    
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset[dataset.columns[~dataset.columns.isin([self.target_to_keep])]].to_numpy())
-        target = torch.from_numpy(dataset[self.target_to_keep].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!  
 
 class Elevators(Skillcraft):
 
@@ -229,7 +212,7 @@ class Elevators(Skillcraft):
     extract_folder = "Elevators"
     files_to_read = ["elevators.data", "elevators.test"]
 
-    dataset_file = "elevators.csv"
+    dataset_file = "elevators.npy"
     
     
     def _download_data(self, url, root):
@@ -247,23 +230,13 @@ class Elevators(Skillcraft):
 
         dataset = dataset.astype(np.float32)
 
+        features = dataset.iloc[:, :-1].to_numpy()
+        target = dataset.iloc[:, -1].to_numpy()
         
-        
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #dataset = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!  
 
 class Protein(Skillcraft):
   
@@ -273,7 +246,7 @@ class Protein(Skillcraft):
 
     files_to_read = resources 
 
-    dataset_file = "protein.csv"
+    dataset_file = "protein.npy"
 
     
     def _download_data(self, url, root):
@@ -282,26 +255,17 @@ class Protein(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
+        data_set = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
 
-        dataset = dataset.astype(np.float32)
+        data_set = data_set.astype(np.float32)
 
+        features = data_set.iloc[:, 1:].to_numpy()
+        target = data_set.iloc[:, 0].to_numpy()
         
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, 1:].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, 0].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!  
 
 class Blog(Skillcraft):
   
@@ -311,7 +275,7 @@ class Blog(Skillcraft):
 
     files_to_read = ["blogData_train.csv"]
 
-    dataset_file = "blog.csv"
+    dataset_file = "blog.npy"
 
 
     def _download_data(self, url, root):
@@ -320,29 +284,19 @@ class Blog(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]), header=None)
+        data_set = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]), header=None)
         
-        dataset = dataset.astype(np.float32)
+        data_set = data_set.astype(np.float32)
         # drop all-zero columns (cf. notebook)
-        dataset.drop(labels=[12, 32, 37, 277], axis=1, inplace=True)
+        data_set.drop(labels=[12, 32, 37, 277], axis=1, inplace=True)
 
+        features = data_set.iloc[:, :-1].to_numpy()
+        target = data_set.iloc[:, -1].to_numpy()
         
-        
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!  
 
 class CTSlice(Skillcraft):
   
@@ -352,7 +306,7 @@ class CTSlice(Skillcraft):
 
     files_to_read = ["slice_localization_data.csv"]
 
-    dataset_file = "ctslice.csv"
+    dataset_file = "ctslice.npy"
 
     
     def _download_data(self, url, root):
@@ -362,31 +316,21 @@ class CTSlice(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
+        data_set = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]))
         
-        dataset.drop(['patientId'], axis=1, inplace=True)
-        dataset = dataset.astype(np.float32)
+        data_set.drop(['patientId'], axis=1, inplace=True)
+        data_set = data_set.astype(np.float32)
 
         # drop all columns that only have one unique value (i.e. std = 0)
-        dataset.drop(labels=["value59", "value69", "value179", "value189", "value351"], inplace=True, axis=1)
+        data_set.drop(labels=["value59", "value69", "value179", "value189", "value351"], inplace=True, axis=1)
 
+        features = data_set.iloc[:, :-1].to_numpy()
+        target = data_set.iloc[:, -1].to_numpy()
         
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!  
-
 
 class Buzz(Skillcraft):
   
@@ -396,7 +340,7 @@ class Buzz(Skillcraft):
 
     files_to_read = ["Twitter.data"]
 
-    dataset_file = "buzz.csv"
+    dataset_file = "buzz.npy"
 
     
     def _download_data(self, url, root):
@@ -405,7 +349,7 @@ class Buzz(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(
+        data_set = pd.read_csv(
             os.path.join(
                 self.raw_folder,
                 self.resources[0].split('.')[0],
@@ -414,26 +358,14 @@ class Buzz(Skillcraft):
             header=None,
         )
 
-        dataset = dataset.astype(np.float32)        
+        data_set = data_set.astype(np.float32)        
+        features = data_set.iloc[:, :-1].to_numpy()
+        target = data_set.iloc[:, -1].to_numpy()
         
-        
-        
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, :-1].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, -1].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!      
-
 
 class Electric(Skillcraft):
   
@@ -443,7 +375,7 @@ class Electric(Skillcraft):
 
     files_to_read = ["household_power_consumption.txt"] 
 
-    dataset_file = "electric.csv"
+    dataset_file = "electric.npy"
     
     
     def _download_data(self, url, root):
@@ -452,31 +384,21 @@ class Electric(Skillcraft):
     def process(self) -> None:
         # process the data set and save it as torch files;
         # to comprehend the processing steps, go to ssdgm/notebooks/skillcraft.ipynb
-        dataset = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]), sep=';', low_memory=False)
+        data_set = pd.read_csv(os.path.join(self.raw_folder, self.files_to_read[0]), sep=';', low_memory=False)
 
-        dataset.drop(["Date", "Time"], axis=1, inplace=True)
-        dataset.dropna(inplace=True)
-        dataset = dataset.apply(pd.to_numeric)
+        data_set.drop(["Date", "Time"], axis=1, inplace=True)
+        data_set.dropna(inplace=True)
+        data_set = data_set.apply(pd.to_numeric)
 
-        dataset = dataset.astype(np.float32)
+        data_set = data_set.astype(np.float32)
 
-    
+        features = data_set.iloc[:, 1:].to_numpy()
+        target = data_set.iloc[:, 0].to_numpy()
         
-        #dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
         #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
-
-    def _load_data(self):
-        #with open(os.path.join(self.processed_folder, self.dataset_file), 'rb') as f:
-        #    dataset = np.load(f, allow_pickle=True)
-        #data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
-        dataset = pd.read_csv(os.path.join(self.processed_folder, self.dataset_file))
-
-        data = torch.from_numpy(dataset.iloc[:, 1:].to_numpy())
-        target = torch.from_numpy(dataset.iloc[:, 0].to_numpy())
-
-        return data, target[:, None]  #! It is essential to do this in each dataset!      
 
 if __name__ == "__main__":
     root = os.path.join(os.getcwd(), "data")
