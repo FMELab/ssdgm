@@ -17,7 +17,7 @@ class Skillcraft(Dataset):
 
     files_to_read = resources
 
-    dataset_file = "skillcraft.pt"
+    dataset_file = "skillcraft.npy"
 
 
     def __init__(
@@ -108,15 +108,17 @@ class Skillcraft(Dataset):
         features = dataset.loc[:, dataset.columns != "LeagueIndex"].to_numpy()
         target = dataset.loc[:, "LeagueIndex"].to_numpy()
 
-        dataset = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #dataset = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
         
     def _save_data(self, data) -> None:
-        torch.save(data, os.path.join(self.processed_folder, self.dataset_file))
+        np.save(os.path.join(self.processed_folder, self.dataset_file), data)
 
     def _load_data(self):
-        data, target = torch.load(os.path.join(self.processed_folder, self.dataset_file))
+        dataset = np.load(os.path.join(self.processed_folder, self.dataset_file))
+        data, target = torch.from_numpy(dataset[:, :-1]), torch.from_numpy(dataset[:, -1])
 
         return data, target[:, None]  #! It is essential to do this in each dataset!  
 
@@ -177,7 +179,7 @@ class Parkinson(Skillcraft):
     target_to_keep = "total_UPDRS"
     target_to_drop = "motor_UPDRS"
 
-    dataset_file = "parkinson.pt"
+    dataset_file = "parkinson.npy"
     
     def _download_data(self, url, root):
         download_url(url, root)
@@ -195,9 +197,10 @@ class Parkinson(Skillcraft):
         features = data_set[data_set.columns[~data_set.columns.isin([self.target_to_keep])]].to_numpy()
         target = data_set[self.target_to_keep].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 class Elevators(Skillcraft):
 
@@ -209,7 +212,7 @@ class Elevators(Skillcraft):
     extract_folder = "Elevators"
     files_to_read = ["elevators.data", "elevators.test"]
 
-    dataset_file = "elevators.pt"
+    dataset_file = "elevators.npy"
     
     
     def _download_data(self, url, root):
@@ -230,7 +233,8 @@ class Elevators(Skillcraft):
         features = dataset.iloc[:, :-1].to_numpy()
         target = dataset.iloc[:, -1].to_numpy()
         
-        dataset = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #dataset = (torch.from_numpy(features), torch.from_numpy(target))
 
         return dataset
 
@@ -242,7 +246,7 @@ class Protein(Skillcraft):
 
     files_to_read = resources 
 
-    dataset_file = "protein.pt"
+    dataset_file = "protein.npy"
 
     
     def _download_data(self, url, root):
@@ -258,9 +262,10 @@ class Protein(Skillcraft):
         features = data_set.iloc[:, 1:].to_numpy()
         target = data_set.iloc[:, 0].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 class Blog(Skillcraft):
   
@@ -270,7 +275,7 @@ class Blog(Skillcraft):
 
     files_to_read = ["blogData_train.csv"]
 
-    dataset_file = "blog.pt"
+    dataset_file = "blog.npy"
 
 
     def _download_data(self, url, root):
@@ -288,9 +293,10 @@ class Blog(Skillcraft):
         features = data_set.iloc[:, :-1].to_numpy()
         target = data_set.iloc[:, -1].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 class CTSlice(Skillcraft):
   
@@ -300,7 +306,7 @@ class CTSlice(Skillcraft):
 
     files_to_read = ["slice_localization_data.csv"]
 
-    dataset_file = "ctslice.pt"
+    dataset_file = "ctslice.npy"
 
     
     def _download_data(self, url, root):
@@ -321,9 +327,10 @@ class CTSlice(Skillcraft):
         features = data_set.iloc[:, :-1].to_numpy()
         target = data_set.iloc[:, -1].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 class Buzz(Skillcraft):
   
@@ -333,7 +340,7 @@ class Buzz(Skillcraft):
 
     files_to_read = ["Twitter.data"]
 
-    dataset_file = "buzz.pt"
+    dataset_file = "buzz.npy"
 
     
     def _download_data(self, url, root):
@@ -355,9 +362,10 @@ class Buzz(Skillcraft):
         features = data_set.iloc[:, :-1].to_numpy()
         target = data_set.iloc[:, -1].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 class Electric(Skillcraft):
   
@@ -367,7 +375,7 @@ class Electric(Skillcraft):
 
     files_to_read = ["household_power_consumption.txt"] 
 
-    dataset_file = "electric.pt"
+    dataset_file = "electric.npy"
     
     
     def _download_data(self, url, root):
@@ -387,9 +395,10 @@ class Electric(Skillcraft):
         features = data_set.iloc[:, 1:].to_numpy()
         target = data_set.iloc[:, 0].to_numpy()
         
-        data_set = (torch.from_numpy(features), torch.from_numpy(target))
+        dataset = np.concatenate((features, target[:, np.newaxis]), axis=1)
+        #data_set = (torch.from_numpy(features), torch.from_numpy(target))
 
-        return data_set
+        return dataset
 
 if __name__ == "__main__":
     root = os.path.join(os.getcwd(), "data")
