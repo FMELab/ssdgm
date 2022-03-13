@@ -7,7 +7,7 @@ defaults:
   - override /datamodule: skillcraft.yaml
   - override /model: probabilisticpredictor.yaml
   - override /callbacks: default.yaml
-  - override /logger: wandb.yaml
+  - override /logger: null
   - override /trainer: experiment.yaml
 
 name: "probabilisticpredictor"

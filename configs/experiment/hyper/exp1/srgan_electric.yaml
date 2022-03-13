@@ -7,7 +7,7 @@ defaults:
   - override /datamodule: electric.yaml
   - override /model: srgan.yaml
   - override /callbacks: default.yaml
-  - override /logger: wandb.yaml
+  - override /logger: null
   - override /trainer: experiment.yaml
 
 name: "srgan"

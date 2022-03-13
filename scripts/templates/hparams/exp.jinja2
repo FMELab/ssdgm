@@ -7,7 +7,7 @@ defaults:
   - override /datamodule: {{ datamodule_name }}.yaml
   - override /model: {{ model_name }}.yaml
   - override /callbacks: default.yaml
-  - override /logger: wandb.yaml
+  - override /logger: null
   - override /trainer: experiment.yaml
 
 name: "{{ model_name }}"
