@@ -33,20 +33,22 @@ class Skillcraft(Dataset):
         self.target_transform = target_transform
 
         if self._check_processed_exists():
-            self.data, self.targets = self._load_data()
-
-        # download the data
-        if download:
-            self.download()
-
-        dataset = self.process()
-        self._save_data(dataset)
-
-        if not self._check_processed_exists():
-            raise RuntimeError('Dataset not found. You can use download=True to download it.')
+            try:
+                self.data, self.targets = self._load_data()
+            except:
+                raise RuntimeError("Folder with processed datasets does not exist. Use download=True to download and process the dataset.")
+        else: 
+            # download the data
+            if download:
+                self.download()
+                dataset = self.process()
+                self._save_data(dataset)
+                self.data, self.targets = self._load_data()
+            else: 
+                raise RuntimeError('Dataset not found. You can use download=True to download it.')
 
         # load the processed data    
-        self.data, self.targets = self._load_data()
+        #self.data, self.targets = self._load_data()
 
     def download(self) -> None:
         """Download the Skillcraft data, if it doesn't exist already."""
@@ -394,16 +396,16 @@ class Electric(Skillcraft):
 if __name__ == "__main__":
     root = os.path.join(os.getcwd(), "data")
     print(root)
-    download = False
+    download = True
     datasets = [
-        Skillcraft(root, download),
-        Parkinson(root, download),
-        Elevators(root, download),
-        Protein(root, download),
-        Blog(root, download),
-        CTSlice(root, download),
-        Buzz(root, download),
-        Electric(root, download),
+        Skillcraft(root, download=download),
+        Parkinson(root, download=download),
+        Elevators(root, download=download),
+        Protein(root, download=download),
+        Blog(root, download=download),
+        CTSlice(root, download=download),
+        Buzz(root, download=download),
+        Electric(root, download=download),
     ]
     for ds in datasets:
         print(f"no. of samples for {ds.dataset_file}: {len(ds)}")
