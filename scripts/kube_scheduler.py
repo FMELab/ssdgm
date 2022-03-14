@@ -4,6 +4,7 @@ import subprocess
 from argparse import ArgumentParser
 from datetime import datetime
 import yaml
+import time
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -31,6 +32,7 @@ def start_config(args, info, yaml, dry_run=True):
                             command = "kubectl -n studerhard create -f -"
                             p = subprocess.Popen(command.split(), stdin=subprocess.PIPE)
                             p.communicate(output_text.encode())
+                            time.sleep(30)
                         except:
                             print(f'Could not start job for {model["name"]} - {datamodule["name"]}')
 
@@ -61,7 +63,7 @@ if __name__ == '__main__':
         "cpus": 8,
         "cpus_big_datasets": 16,
         "memory": 4,
-        "memory_big_datasets": 16,
+        "memory_big_datasets": 32,
         "use_gpu": False,
         "script_path": "/workspace/ssdgm/train.py"
     }
