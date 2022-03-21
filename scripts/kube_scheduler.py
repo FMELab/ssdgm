@@ -32,7 +32,7 @@ def start_config(args, info, yaml, dry_run=True):
                             command = "kubectl -n studerhard create -f -"
                             p = subprocess.Popen(command.split(), stdin=subprocess.PIPE)
                             p.communicate(output_text.encode())
-                            time.sleep(30)
+                            time.sleep(20)
                         except:
                             print(f'Could not start job for {model["name"]} - {datamodule["name"]}')
 
@@ -60,9 +60,9 @@ if __name__ == '__main__':
     yaml_dict = {
         "job_name": "{}".format("hparams-search"),
         "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.4",
-        "cpus": 8,
-        "cpus_big_datasets": 16,
-        "memory": 4,
+        "cpus": 12,
+        "cpus_big_datasets": 24,
+        "memory": 12,
         "memory_big_datasets": 32,
         "use_gpu": False,
         "script_path": "/workspace/ssdgm/train.py"
