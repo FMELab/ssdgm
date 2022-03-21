@@ -49,9 +49,10 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
 
 
     def forward(self, x):
-       output_distribution = self.dkl_model(x) 
+        with gpytorch.settings.cholesky_jitter(1e-1):
+            output_distribution = self.dkl_model(x) 
 
-       return output_distribution
+        return output_distribution
 
 
 
@@ -75,7 +76,7 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
         likelihood_loss = -log_marginal_likelihood(output_distribution_labeled, y)
 
         self.dkl_model.eval()
-        with torch.no_grad(), gpytorch.settings.fast_pred_var(False):
+        with gpytorch.settings.fast_pred_var(False):
             output_distribution_unlabeled = self.forward(x_unlabeled)
         self.dkl_model.train()
 
@@ -83,7 +84,6 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
 
         loss = likelihood_loss + self.hparams.variance_loss_multiplier * variance_loss
 
-        debug_list.append(variance_loss)
 
         self.log("train/likelihood_loss", likelihood_loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("train/variance_loss", variance_loss, on_step=False, on_epoch=True, prog_bar=False)
