@@ -1,15 +1,15 @@
 _target_: src.models.m2_vae.M2Predictor
 # ENCODER
 enc_in_features: 19  # no. of features + labels (observed or predicted)
-enc_hidden_features: [512, 512, 512]
+enc_hidden_features: [128, 128, 128]
 enc_out_features: 128  # no. of latent features
 # DECODER
 dec_in_features: 129  # no. of latent features + labels (observed or predicted)
-dec_hidden_features: [512, 512, 512]
+dec_hidden_features: [128, 128, 128]
 dec_out_features: 18  # no. of features
 # REGRESSOR
 reg_in_features: 18 # no. of features
-reg_hidden_features: [512, 512, 512]
+reg_hidden_features: [128, 128, 128]
 reg_out_features: 1 # no. of labels
 # HYPERPARAMETER
 regressor_loss_multiplier: 0.01  # weighting factor for regression loss

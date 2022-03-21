@@ -1,7 +1,7 @@
 _target_: src.models.autoencoder_regressor.AutoencoderRegressor
 checkpoint_path: /home/flo/ssdgm/logs/experiments/autoencoder/runs/2022-03-04/09-59-45/checkpoints/epoch_004.ckpt
 reg_in_features: 10   #! has to be same as the latent dimension size of the Autoencoder
-reg_hidden_features: [512, 512, 512] 
+reg_hidden_features: [128, 128, 128] 
 reg_out_features: 1
 # HYPERPARAMETERS
 leaky_relu_slope: 0.2

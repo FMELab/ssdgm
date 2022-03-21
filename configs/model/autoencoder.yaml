@@ -1,9 +1,9 @@
 _target_: src.models.autoencoder.Autoencoder
 enc_in_features: 18
-enc_hidden_features: [512, 512, 512]
+enc_hidden_features: [128, 128, 128]
 enc_out_features: 10
 dec_in_features: 10
-dec_hidden_features: [512, 512, 512]
+dec_hidden_features: [128, 128, 128]
 dec_out_features: 18
 # HYPERPARAMETERS
 leaky_relu_slope: 0.3

@@ -1,28 +1,28 @@
 _target_: src.models.semigan.SemiGAN
 # DISCRIMINATOR_X
 dis_x_in_features: 18  # no. of features
-dis_x_hidden_features: [512, 512, 512]
+dis_x_hidden_features: [128, 128, 128]
 dis_x_out_features: 1
 # DISCRIMINATOR_Y
 dis_y_in_features: 1  # no. of labels
-dis_y_hidden_features: [512, 512, 512]
+dis_y_hidden_features: [128, 128, 128]
 dis_y_out_features: 1
 # DISCRIMINATOR_XY
 dis_xy_in_features: 19  # no. of features + labels
-dis_xy_hidden_features: [512, 512, 512]
+dis_xy_hidden_features: [128, 128, 128]
 dis_xy_out_features: 1
 # GENERATOR_X
-gen_x_hidden_features: [512, 512, 512]
+gen_x_hidden_features: [128, 128, 128]
 gen_x_out_features: 18  # no. of features
 # GENERATOR_Y
-gen_y_hidden_features: [512, 512, 512]
+gen_y_hidden_features: [128, 128, 128]
 gen_y_out_features: 1  # no. of labels
 # INVERSE_NET
 inv_in_features: 18  # no. of features
-inv_hidden_features: [512, 512, 512]
+inv_hidden_features: [128, 128, 128]
 # INFERENCE_NET
 infer_in_features: 18  # no. of features
-infer_hidden_features: [512, 512, 512]
+infer_hidden_features: [128, 128, 128]
 infer_out_features: 1  # no. of labels
 # LATENT
 latent_features: 25  # used for the input of generators and output of inverse net
