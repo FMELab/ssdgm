@@ -2,6 +2,8 @@ from typing import Any, List
 import pytorch_lightning as pl
 
 
+import gc
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -303,7 +305,7 @@ class SemiGAN(pl.LightningModule):
 
 
     def training_epoch_end(self, outputs):
-        self.log_dict(self.train_metrics.compute())
+        self.log_dict(self.train_metrics)
 
     def on_validation_epoch_start(self):
         self.valid_metrics.increment()
@@ -316,7 +318,7 @@ class SemiGAN(pl.LightningModule):
         self.valid_metrics(y_hat, y)
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.log_dict(self.valid_metrics.compute())
+        self.log_dict(self.valid_metrics)
         best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
         best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
         self.log_dict(best_metrics)
@@ -332,7 +334,7 @@ class SemiGAN(pl.LightningModule):
         self.test_metrics(y_hat, y)
 
     def test_epoch_end(self, outputs: List[Any]) -> None:
-        self.log_dict(self.test_metrics.compute())
+        self.log_dict(self.test_metrics)
 
     def configure_optimizers(self):
         dis_opt = torch.optim.Adam(
@@ -356,4 +358,4 @@ class SemiGAN(pl.LightningModule):
             #weight_decay=self.hparams.weight_decay,
         )
 
-        return [dis_opt, gen_opt, inv_opt, inf_opt], []  # second list is for (optional) learning rate schedulers
+        return [dis_opt, gen_opt, inv_opt, inf_opt]  # second list is for (optional) learning rate schedulers
