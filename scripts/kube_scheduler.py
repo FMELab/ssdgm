@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # Arguments which will be passed to the python script. Boolean flags will be automatically set to "--key" (if True)
     yaml_dict = {
         "job_name": "{}".format("hparams-search"),
-        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.4",
+        "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.5",
         "cpus": 12,
         "cpus_big_datasets": 24,
         "memory": 12,
