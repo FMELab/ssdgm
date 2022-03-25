@@ -115,10 +115,12 @@ class Skillcraft(Dataset):
         return dataset
         
     def _save_data(self, data) -> None:
-        torch.save(data, os.path.join(self.processed_folder, self.dataset_file))
+        with open(os.path.join(self.processed_folder, self.dataset_file), mode="wb") as f:
+            torch.save(data, f)
 
     def _load_data(self):
-        data, target = torch.load(os.path.join(self.processed_folder, self.dataset_file))
+        with open(os.path.join(self.processed_folder, self.dataset_file), mode="rb") as f:
+            data, target = torch.load(f)
 
         return data, target[:, None]  #! It is essential to do this in each dataset!  
 
