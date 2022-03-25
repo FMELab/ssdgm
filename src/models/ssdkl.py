@@ -73,7 +73,8 @@ class SemiSupervisedDeepKernelLearning(pl.LightningModule):
         output_distribution_labeled = self.forward(x_labeled)
 
         log_marginal_likelihood = gpytorch.mlls.ExactMarginalLogLikelihood(self.likelihood, self.dkl_model)
-        likelihood_loss = -log_marginal_likelihood(output_distribution_labeled, y)
+        with gpytorch.settings.cholesky_jitter(1e-1):
+            likelihood_loss = -log_marginal_likelihood(output_distribution_labeled, y)
 
         self.dkl_model.eval()
         with gpytorch.settings.fast_pred_var(False):
