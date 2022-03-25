@@ -9,7 +9,6 @@ from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
 from typing import Any, List
 
 
-debug_list = []
 
 class SemiSupervisedDeepKernelLearning(pl.LightningModule):
     def __init__(
