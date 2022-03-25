@@ -1,0 +1,36 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_ssdkl experiment=hyper/exp1/ssdkl_buzz.yaml
+
+defaults:
+  - override /datamodule: buzz.yaml
+  - override /model: ssdkl.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: experiment.yaml
+
+name: "ssdkl"
+dataset: "buzz"
+
+model:
+  enc_in_features: 77
+  enc_out_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${dataset}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "ssdkl_buzz"
+    tags: 
+      - ${name}
+      - "buzz"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp2/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
