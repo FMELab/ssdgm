@@ -22,7 +22,7 @@ class DeepKernelLearning(gpytorch.models.ExactGP):
 
             
 
-        self.scale_to_bounds = gpytorch.utils.grid.ScaleToBounds(-1., 1.)
+        #self.scale_to_bounds = gpytorch.utils.grid.ScaleToBounds(-1., 1.)
 
     def forward(self, x):
         projected_x = self.encoder(x)
