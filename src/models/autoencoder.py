@@ -84,7 +84,6 @@ class Autoencoder(pl.LightningModule):
         self.train_metrics.increment()
 
     def training_step(self, batch: Any, batch_idx: int):
-
         x_labeled, _ = batch["labeled"]
         x_unlabeled, _ = batch["unlabeled"]
 
@@ -102,7 +101,7 @@ class Autoencoder(pl.LightningModule):
 
     def training_epoch_end(self, outputs):
         # Log the metrics at the end of each training epoch
-        self.log_dict(self.train_metrics.compute())
+        self.log_dict(self.train_metrics)
 
 
     def on_validation_epoch_start(self):
@@ -115,7 +114,7 @@ class Autoencoder(pl.LightningModule):
         self.valid_metrics(x_hat, x)
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.log_dict(self.valid_metrics.compute())
+        self.log_dict(self.valid_metrics)
         best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
         best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
         self.log_dict(best_metrics)
@@ -131,7 +130,7 @@ class Autoencoder(pl.LightningModule):
         self.test_metrics(x_hat, x)
 
     def test_epoch_end(self, outputs: List[Any]):
-        self.log_dict(self.test_metrics.compute())
+        self.log_dict(self.test_metrics)
 
 
     def configure_optimizers(self):
