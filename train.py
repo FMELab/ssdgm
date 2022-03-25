@@ -1,6 +1,7 @@
 import dotenv
 import hydra
 from omegaconf import DictConfig
+import time
 
 # load environment variables from `.env` file if it exists
 # recursively searches for `.env` in all folders starting from work dir
@@ -23,4 +24,6 @@ def main(config: DictConfig):
 
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    print(f"Execution time: {time.time() - start} secs")
