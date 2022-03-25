@@ -9,7 +9,8 @@ gpytorch
 # --------- hydra --------- #
 hydra-core==1.1.0
 hydra-colorlog==1.1.0
-hydra-optuna-sweeper==1.1.0
+hydra-optuna-sweeper==1.1.2
+hydra-nevergrad-sweeper==1.1.5
 # hydra-ax-sweeper
 # hydra-ray-launcher
 # hydra-submitit-launcher
