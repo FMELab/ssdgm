@@ -19,9 +19,9 @@ def start_config(args, info, yaml, dry_run=True):
     template = Environment(loader=FileSystemLoader(template_path)).get_template(TEMPLATE_FILE)
 
     job_name_base_string = yaml["job_name"]
-    for round in info["hyper"]["hyperparameter_tuning"]:
-        if args.round == round["round"]:
-            for model in round["models"]:
+    for run in info["hyper"]["hyperparameter_tuning"]:
+        if args.round == run["round"]:
+            for model in run["models"]:
                 for datamodule in info["exp"]["datamodules"]:  
                     yaml["job_name"] = f"{job_name_base_string}-{model['name']}-{datamodule['name']}"
                     args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"]
