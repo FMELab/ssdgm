@@ -1,0 +1,568 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=varying/labeled/{{model_name}}_{{datamodule_name}}_{{labeled_examples}}.yaml
+
+defaults:
+  - override /datamodule: {{ datamodule_name }}.yaml
+  - override /model: {{ model_name }}.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: experiment.yaml
+
+name: "{{ experiment_name }}"
+modelname: "{{ model_name }}"
+dataset: "{{ datamodule_name }}"
+
+datamodule:
+  n_samples_train_labeled: {{ labeled_examples }}
+{%- if model_name == "mlp" or model_name == "autoencoderregressor" or model_name == "deterministicpredictor" or model_name == "probabilisticpredictor" %}
+  use_unlabeled_dataloader: False
+{%- endif %}
+{%- if model_name == "mlp" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 128
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 256
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 256
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 128
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 256
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 64
+  {%- endif %}
+{%- elif model_name == "autencoder" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 256
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 256 
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 256
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 256
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 128
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 256
+  {%- endif %}
+{%- elif model_name == "autoencoderregressor" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size:
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size:
+  {%- elif datamodule_name == "elevators" %}
+  batch_size:
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size:
+  {%- elif datamodule_name == "protein" %}
+  batch_size:
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size:
+  {%- endif %}
+{%- elif model_name == "vae" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 256
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 128
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 128
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 128
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 256
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 256
+  {%- endif %}
+{%- elif model_name == "deterministicpredictor" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size:
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size:
+  {%- elif datamodule_name == "elevators" %}
+  batch_size:
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size:
+  {%- elif datamodule_name == "protein" %}
+  batch_size:
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size:
+  {%- endif %}
+{%- elif model_name == "probabilisticpredictor" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size:
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size:
+  {%- elif datamodule_name == "elevators" %}
+  batch_size:
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size:
+  {%- elif datamodule_name == "protein" %}
+  batch_size:
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size:
+  {%- endif %}
+{%- elif model_name == "m2vae" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 128
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 256
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 64
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 256
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 64
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 256
+  {%- endif %}
+{%- elif model_name == "srgan" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 256
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 64
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 256
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 256
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 64
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 64
+  {%- endif %}
+{%- elif model_name == "semigan" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 128
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 64
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 256
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 128
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 256
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 256
+  {%- endif %}
+{%- elif model_name == "ssdkl" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 64
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 256
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 64
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 256
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 64
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 256
+  {%- endif %}
+{%- endif %}
+
+model:
+{%- if model_name == "mlp" %}
+  in_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.1
+  lr: 0.002
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.3
+  lr: 0.01
+  {%- elif datamodule_name == "elevators" %}
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.001
+  {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.4
+  lr: 0.00002
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.6
+  lr: 0.003
+  {%- elif datamodule_name == "skillcraft" %}
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.6
+  lr: 0.00001
+  {%- endif %}
+{%- elif model_name == "autoencoder" %}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ latent }}
+  dec_out_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.002
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.001
+  {%- elif datamodule_name == "elevators" %}
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.01
+  {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 0.002
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.0004
+  {%- elif datamodule_name == "skillcraft" %}
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.2
+  lr: 0.0006
+  {%- endif %}
+{%- elif model_name == "autoencoderregressor" %}
+  reg_in_features: {{ latent }}
+  {%- if datamodule_name == "blog" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "elevators" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "skillcraft" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- endif %}
+{%- elif model_name == "vae"%}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ latent }}
+  dec_out_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  regularization_loss_multiplier: 0.001
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.0004
+  {%- elif datamodule_name == "ctslice" %}
+  regularization_loss_multiplier: 0.001
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.007
+  {%- elif datamodule_name == "elevators" %}
+  regularization_loss_multiplier: 0.002
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.0001
+  {%- elif datamodule_name == "parkinson" %}
+  regularization_loss_multiplier: 0.001
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.1
+  lr: 0.0007
+  {%- elif datamodule_name == "protein" %}
+  regularization_loss_multiplier: 0.001
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.001
+  {%- elif datamodule_name == "skillcraft" %}
+  regularization_loss_multiplier: 0.001
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 0.0006
+  {%- endif %}
+{%- elif model_name == "deterministicpredictor" %}
+  reg_in_features: {{ latent }}
+  {%- if datamodule_name == "blog" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "elevators" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "skillcraft" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- endif %}
+{%- elif model_name == "probabilisticpredictor" %}
+  reg_in_features: {{ latent }}
+  {%- if datamodule_name == "blog" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "elevators" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- elif datamodule_name == "skillcraft" %}
+  leaky_relu_slope:
+  dropout_proba:
+  lr: 
+  {%- endif %}
+{%- elif model_name == "m2vae" %}
+  enc_in_features: {{ add_1(features) }}
+  enc_out_features: {{ latent }}
+  dec_in_features: {{ add_1(latent) }}
+  dec_out_features: {{ features }}
+  reg_in_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  regressor_loss_multiplier: 0.06
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 0.0007
+  {%- elif datamodule_name == "ctslice" %}
+  regressor_loss_multiplier: 7.05
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.6
+  lr: 0.004
+  {%- elif datamodule_name == "elevators" %}
+  regressor_loss_multiplier: 7.61
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.7
+  lr: 0.00002
+  {%- elif datamodule_name == "parkinson" %}
+  regressor_loss_multiplier: 0.01
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 0.003
+  {%- elif datamodule_name == "protein" %}
+  regressor_loss_multiplier: 7.87
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 0.00001
+  {%- elif datamodule_name == "skillcraft" %}
+  regressor_loss_multiplier: 0.04
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 0.01
+  {%- endif %}
+{%- elif model_name == "srgan" %}
+  gen_out_features: {{ features }}
+  dis_in_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  gradient_penalty_multiplier: 0.018
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.4
+  lr: 0.01
+  {%- elif datamodule_name == "ctslice" %}
+  gradient_penalty_multiplier: 0.673
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.3
+  lr: 0.007
+  {%- elif datamodule_name == "elevators" %}
+  gradient_penalty_multiplier: 0.008
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.6
+  lr: 0.00003
+  {%- elif datamodule_name == "parkinson" %}
+  gradient_penalty_multiplier: 0.004
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.4
+  lr: 0.00001
+  {%- elif datamodule_name == "protein" %}
+  gradient_penalty_multiplier: 0.002
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.00004
+  {%- elif datamodule_name == "skillcraft" %}
+  gradient_penalty_multiplier: 0.006
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.6
+  lr: 0.00005
+  {%- endif %}
+{%- elif model_name == "semigan" %}
+  dis_x_in_features: {{ features }}
+  dis_xy_in_features: {{ add_1(features) }}
+  gen_x_out_features: {{ features }}
+  inv_in_features: {{ features }}
+  infer_in_features: {{ features }}
+  {%- if datamodule_name == "blog" %}
+  dis_x_multiplier: 0.086
+  dis_y_multiplier: 0.100    
+  dis_xy_multiplier: 7.413    
+  gen_x_multiplier: 0.001   
+  gen_y_multiplier: 0.617    
+  gen_xy_multiplier: 0.002    
+  translation_multiplier: 0.001   
+  reconstruction_multiplier: 9.754
+  inverse_multiplier: 0.306 
+  synthesized_multiplier: 2.830 
+  consistency_multiplier: 0.003
+  sufficient_inference_epoch: 29
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 0.006
+  {%- elif datamodule_name == "ctslice" %}
+  dis_x_multiplier: 0.004
+  dis_y_multiplier: 1.517    
+  dis_xy_multiplier: 0.006    
+  gen_x_multiplier: 0.005   
+  gen_y_multiplier: 0.005    
+  gen_xy_multiplier: 1.813    
+  translation_multiplier: 0.458   
+  reconstruction_multiplier: 0.124
+  inverse_multiplier: 0.027
+  synthesized_multiplier: 3.227  
+  consistency_multiplier: 0.003
+  sufficient_inference_epoch: 42
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.6
+  lr: 0.003
+  {%- elif datamodule_name == "elevators" %}
+  dis_x_multiplier: 3.159
+  dis_y_multiplier: 2.675    
+  dis_xy_multiplier: 0.777    
+  gen_x_multiplier: 0.012   
+  gen_y_multiplier: 0.013    
+  gen_xy_multiplier: 0.379    
+  translation_multiplier: 2.088
+  reconstruction_multiplier: 0.015
+  inverse_multiplier: 0.173
+  synthesized_multiplier: 5.772  
+  consistency_multiplier: 0.002
+  sufficient_inference_epoch: 29
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.7
+  lr: 0.01
+  {%- elif datamodule_name == "parkinson" %}
+  dis_x_multiplier: 6.337
+  dis_y_multiplier: 0.002
+  dis_xy_multiplier: 1.600
+  gen_x_multiplier: 0.002
+  gen_y_multiplier: 0.034
+  gen_xy_multiplier: 0.369
+  translation_multiplier: 0.003
+  reconstruction_multiplier: 0.239
+  inverse_multiplier: 0.080
+  synthesized_multiplier: 0.224
+  consistency_multiplier: 0.010
+  sufficient_inference_epoch: 43
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.004
+{%- elif datamodule_name == "protein" %}
+  dis_x_multiplier: 0.009
+  dis_y_multiplier: 2.835
+  dis_xy_multiplier: 0.194
+  gen_x_multiplier: 0.073
+  gen_y_multiplier: 1.547
+  gen_xy_multiplier: 0.092
+  translation_multiplier: 0.003
+  reconstruction_multiplier: 0.266
+  inverse_multiplier: 0.095
+  synthesized_multiplier: 2.873
+  consistency_multiplier: 0.512
+  sufficient_inference_epoch: 28
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.00001
+  {%- elif datamodule_name == "skillcraft" %}
+  dis_x_multiplier: 0.066
+  dis_y_multiplier: 0.453
+  dis_xy_multiplier: 7.820
+  gen_x_multiplier: 0.005
+  gen_y_multiplier: 9.863
+  gen_xy_multiplier: 0.647
+  translation_multiplier: 0.004
+  reconstruction_multiplier: 0.006
+  inverse_multiplier: 0.090
+  synthesized_multiplier: 3.862 
+  consistency_multiplier: 0.004
+  sufficient_inference_epoch: 5
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.8
+  lr: 0.00002
+  {%- endif %}
+{%- elif model_name == "ssdkl" %}
+  enc_in_features: {{ features }}
+  enc_out_features: {{ latent }}
+  {%- if datamodule_name == "blog" %}
+  variance_loss_multiplier: 1.866 
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.00006
+  {%- elif datamodule_name == "ctslice" %}
+  variance_loss_multiplier: 4.082
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.2
+  lr: 0.004
+  {%- elif datamodule_name == "elevators" %}
+  variance_loss_multiplier: 1.658
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.8
+  lr: 0.00002
+  {%- elif datamodule_name == "parkinson" %}
+  variance_loss_multiplier: 0.018
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.8
+  lr: 0.0001
+  {%- elif datamodule_name == "protein" %}
+  variance_loss_multiplier: 0.112
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.00005
+  {%- elif datamodule_name == "skillcraft" %}
+  variance_loss_multiplier: 0.424
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.7
+  lr: 0.00001
+  {%- endif %}
+{%- endif %}
+
+seed: 42
+
+logger:
+  wandb:
+    project: "ssdgm-vary"
+    name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "train_varied_labeled"
+    group: ${modelname}-${dataset}
+    tags: 
+      - ${name}
+      - ${modelname}
+      - ${dataset}
+      - "varying"
+      - "labeled"
+      - "{{labeled_examples}}"
+    notes: "Varying the number of labeled observations."
+
+hydra:
+  run:
+    dir: logs/experiments/runs/${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}_${now:%H-%M-%S}
