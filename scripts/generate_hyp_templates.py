@@ -1,8 +1,7 @@
 from argparse import ArgumentParser
-from pipes import Template
 import yaml
 from pprint import pprint as p
-from jinja2 import Environment, FileSystemLoader, Template
+from jinja2 import Environment, FileSystemLoader
 import os
 
 
