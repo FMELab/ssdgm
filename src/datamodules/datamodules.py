@@ -21,6 +21,7 @@ class BaseDataModule(LightningDataModule):
             n_samples_train_labeled: int = 500,
             val_proportion: float = 0.1,
             n_samples_test: int = 1000,
+            split_seed: int = 42,
             use_unlabeled_dataloader: bool = True,
             train_ssdkl: bool = False,
             num_workers: int = 0,
@@ -83,7 +84,7 @@ class BaseDataModule(LightningDataModule):
             self.data_train_labeled, self.data_train_unlabeled, self.data_val, self.data_test = random_split(
                                                 dataset=self.dataset,
                                                 lengths=split_lengths,
-                                                generator=torch.Generator().manual_seed(42),
+                                                generator=torch.Generator().manual_seed(self.hparams.split_seed),
             )
             params_dict = self._calc_standardization_params()
 
