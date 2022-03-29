@@ -34,16 +34,16 @@ class MultiLayerPerceptron(pl.LightningModule):
             }
         )
 
-        self.train_metrics = MetricTracker(metrics.clone(prefix="train/"), maximize=[False, False])
-        self.valid_metrics = MetricTracker(metrics.clone(prefix="val/"), maximize=[False, False])
-        self.test_metrics = MetricTracker(metrics.clone(prefix="test/"), maximize=[False, False])
+        self.train_metrics = metrics.clone(prefix="train/")
+        self.valid_metrics = metrics.clone(prefix="val/")
+        self.test_metrics = metrics.clone(prefix="test/")
 
     def forward(self, x):
         y_hat = self.net(x)
         return y_hat
     
-    def on_train_epoch_start(self):
-        self.train_metrics.increment()
+
+
 
     def training_step(self, batch, batch_idx):
         x_labeled, y = batch["labeled"]
@@ -59,10 +59,8 @@ class MultiLayerPerceptron(pl.LightningModule):
         return loss
 
     def on_train_epoch_end(self):
-        self.log_dict(self.train_metrics.compute())
+        self.log_dict(self.train_metrics)
 
-    def on_validation_epoch_start(self):
-        self.valid_metrics.increment()
 
     def validation_step(self, batch, batch_idx):
         x_labeled, y = batch
@@ -71,13 +69,8 @@ class MultiLayerPerceptron(pl.LightningModule):
         self.valid_metrics(y_hat, y)
 
     def on_validation_epoch_end(self):
-        self.log_dict(self.valid_metrics.compute())
-        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
-        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
-        self.log_dict(best_metrics)
+        self.log_dict(self.valid_metrics)
     
-    def on_test_epoch_start(self):
-        self.test_metrics.increment()
 
     def test_step(self, batch, batch_idx):
         x_labeled, y = batch
@@ -86,7 +79,7 @@ class MultiLayerPerceptron(pl.LightningModule):
         self.test_metrics(y_hat, y)
 
     def on_test_epoch_end(self):
-        self.log_dict(self.test_metrics.compute())
+        self.log_dict(self.test_metrics)
 
     def configure_optimizers(self):
         optimizer = T.optim.Adam(

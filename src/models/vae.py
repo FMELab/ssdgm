@@ -52,9 +52,9 @@ class VariationalAutoencoder(pl.LightningModule):
             }
         )
 
-        self.train_metrics = MetricTracker(metrics.clone(prefix='train/'), maximize=[False, False])
-        self.valid_metrics = MetricTracker(metrics.clone(prefix='val/'), maximize=[False, False])
-        self.test_metrics = MetricTracker(metrics.clone(prefix='test/'), maximize=[False, False])
+        self.train_metrics = metrics.clone(prefix='train/')
+        self.valid_metrics = metrics.clone(prefix='val/')
+        self.test_metrics = metrics.clone(prefix='test/')
 
     def reparameterize(self, z_mean, z_log_var):
         """
@@ -99,8 +99,6 @@ class VariationalAutoencoder(pl.LightningModule):
 
         return z_mean, z_log_var, z
 
-    def on_train_epoch_start(self) -> None:
-        self.train_metrics.increment()
         
     def training_step(self, batch: Any, batch_idx: int):
 
@@ -125,12 +123,10 @@ class VariationalAutoencoder(pl.LightningModule):
         return elbo
     
     def training_epoch_end(self, outputs):
-        self.log_dict(self.train_metrics.compute())
+        self.log_dict(self.train_metrics)
 
     ####################### VAL #######################
 
-    def on_validation_epoch_start(self):
-        self.valid_metrics.increment()
         
     def validation_step(self, batch: Any, batch_idx: int):
         x, _ = batch
@@ -141,15 +137,9 @@ class VariationalAutoencoder(pl.LightningModule):
         self.valid_metrics(x_hat, x)
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.log_dict(self.valid_metrics.compute())
-        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
-        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
-        self.log_dict(best_metrics)
+        self.log_dict(self.valid_metrics)
 
     ####################### TEST ##########################
-
-    def on_test_epoch_start(self) -> None:
-        self.test_metrics.increment()        
 
     def test_step(self, batch: Any, batch_idx: int):
         x, _ = batch
@@ -161,7 +151,7 @@ class VariationalAutoencoder(pl.LightningModule):
         self.test_metrics(x_hat, x)
     
     def test_epoch_end(self, outputs: List[Any]) -> None:
-        self.log_dict(self.test_metrics.compute())
+        self.log_dict(self.test_metrics)
     ####################### OPT ##########################
 
     def configure_optimizers(self):

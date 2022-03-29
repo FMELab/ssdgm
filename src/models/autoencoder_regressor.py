@@ -46,9 +46,9 @@ class AutoencoderRegressor(pl.LightningModule):
             }
         )
 
-        self.train_metrics = MetricTracker(metrics.clone(prefix='train/'), maximize=[False, False])
-        self.valid_metrics = MetricTracker(metrics.clone(prefix='val/'), maximize=[False, False])
-        self.test_metrics = MetricTracker(metrics.clone(prefix='test/'), maximize=[False, False])
+        self.train_metrics = metrics.clone(prefix='train/')
+        self.valid_metrics = metrics.clone(prefix='val/')
+        self.test_metrics = metrics.clone(prefix='test/')
 
     def forward(self, x: torch.Tensor):
         _, embedding = self.feature_extractor(x)
@@ -69,8 +69,6 @@ class AutoencoderRegressor(pl.LightningModule):
 
         #return loss, y, y_hat
 
-    def on_train_epoch_start(self) -> None:
-        self.train_metrics.increment()
 
     def training_step(self, batch: Any, batch_idx: int):
         x, y = batch["labeled"]
@@ -85,11 +83,8 @@ class AutoencoderRegressor(pl.LightningModule):
         return loss
 
     def training_epoch_end(self, outputs):
-        self.log_dict(self.train_metrics.compute())
+        self.log_dict(self.train_metrics)
 
-
-    def on_validation_epoch_start(self):
-        self.valid_metrics.increment()
 
     def validation_step(self, batch: Any, batch_idx: int):
         x, y = batch
@@ -99,14 +94,7 @@ class AutoencoderRegressor(pl.LightningModule):
         self.valid_metrics(y_hat, y)
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.log_dict(self.valid_metrics.compute())
-        best_metrics, _ = self.valid_metrics.best_metric(return_step=True)
-        best_metrics = {f"{key}_best": val for key, val in best_metrics.items()}
-        self.log_dict(best_metrics)
-
-
-    def on_test_epoch_start(self) -> None:
-        self.test_metrics.increment()        
+        self.log_dict(self.valid_metrics)
 
     def test_step(self, batch: Any, batch_idx: int):
         x, y = batch
@@ -114,6 +102,9 @@ class AutoencoderRegressor(pl.LightningModule):
         y_hat = self.forward(x)
 
         self.test_metrics(y_hat, y)
+
+    def test_step_end(self, outputs: List[Any]):
+        self.log_dict(self.test_metrics)
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
