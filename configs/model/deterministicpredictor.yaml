@@ -1,6 +1,6 @@
 _target_: src.models.deterministic_vae.VAEDeterministicPredictor
-vae_checkpoint_path: "/home/flo/ssdgm/logs/experiments/variational_autoencoder/runs/2022-03-01/16-29-37/checkpoints/epoch_003.ckpt"
-reg_in_features: 12  #! this must be equal to the latent dim of the used VAE
+vae_checkpoint_path: ${original_work_dir}/logs/experiments/
+reg_in_features: 2  #! this must be equal to the latent dim of the used VAE
 reg_hidden_features: [128, 128, 128]
 reg_out_features: 1
 leaky_relu_slope: 0.2

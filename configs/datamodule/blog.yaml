@@ -5,5 +5,6 @@ batch_size: 64
 n_samples_train_labeled: 500
 val_proportion: 0.9
 n_samples_test: 1000
+split_seed: 43
 num_workers: 0
 pin_memory: False

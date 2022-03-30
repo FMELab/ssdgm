@@ -1,0 +1,61 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=varying/labeled/semigan_skillcraft.yaml
+
+defaults:
+  - override /datamodule: skillcraft.yaml
+  - override /model: semigan.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: vary_labeled.yaml
+
+name: "vary_labeled"
+modelname: "semigan"
+dataset: "skillcraft"
+
+datamodule:
+  batch_size: 256
+
+model:
+  dis_x_in_features: 18
+  dis_xy_in_features: 19
+  gen_x_out_features: 18
+  inv_in_features: 18
+  infer_in_features: 18
+  dis_x_multiplier: 0.066
+  dis_y_multiplier: 0.453
+  dis_xy_multiplier: 7.820
+  gen_x_multiplier: 0.005
+  gen_y_multiplier: 9.863
+  gen_xy_multiplier: 0.647
+  translation_multiplier: 0.004
+  reconstruction_multiplier: 0.006
+  inverse_multiplier: 0.090
+  synthesized_multiplier: 3.862 
+  consistency_multiplier: 0.004
+  sufficient_inference_epoch: 5
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.8
+  lr: 0.00002
+
+seed: 42
+
+logger:
+  wandb:
+    project: "ssdgm-vary"
+    name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "train_varied_labeled"
+    group: ${modelname}-${dataset}
+    tags: 
+      - ${name}
+      - ${modelname}
+      - ${dataset}
+      - "varying"
+      - "labeled"
+      - ${n_samples_train_labeled}
+    notes: "Varying the number of labeled observations."
+
+hydra:
+  run:
+    dir: logs/experiments/runs/${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}_${now:%H-%M-%S}

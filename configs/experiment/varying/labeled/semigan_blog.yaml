@@ -1,0 +1,61 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=varying/labeled/semigan_blog.yaml
+
+defaults:
+  - override /datamodule: blog.yaml
+  - override /model: semigan.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: vary_labeled.yaml
+
+name: "vary_labeled"
+modelname: "semigan"
+dataset: "blog"
+
+datamodule:
+  batch_size: 128
+
+model:
+  dis_x_in_features: 276
+  dis_xy_in_features: 277
+  gen_x_out_features: 276
+  inv_in_features: 276
+  infer_in_features: 276
+  dis_x_multiplier: 0.086
+  dis_y_multiplier: 0.100    
+  dis_xy_multiplier: 7.413    
+  gen_x_multiplier: 0.001   
+  gen_y_multiplier: 0.617    
+  gen_xy_multiplier: 0.002    
+  translation_multiplier: 0.001   
+  reconstruction_multiplier: 9.754
+  inverse_multiplier: 0.306 
+  synthesized_multiplier: 2.830 
+  consistency_multiplier: 0.003
+  sufficient_inference_epoch: 29
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 0.006
+
+seed: 42
+
+logger:
+  wandb:
+    project: "ssdgm-vary"
+    name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "train_varied_labeled"
+    group: ${modelname}-${dataset}
+    tags: 
+      - ${name}
+      - ${modelname}
+      - ${dataset}
+      - "varying"
+      - "labeled"
+      - ${n_samples_train_labeled}
+    notes: "Varying the number of labeled observations."
+
+hydra:
+  run:
+    dir: logs/experiments/runs/${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}_${now:%H-%M-%S}

@@ -1,0 +1,50 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=varying/labeled/m2vae_skillcraft.yaml
+
+defaults:
+  - override /datamodule: skillcraft.yaml
+  - override /model: m2vae.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: vary_labeled.yaml
+
+name: "vary_labeled"
+modelname: "m2vae"
+dataset: "skillcraft"
+
+datamodule:
+  batch_size: 256
+
+model:
+  enc_in_features: 19
+  enc_out_features: 2
+  dec_in_features: 3
+  dec_out_features: 18
+  reg_in_features: 18
+  regressor_loss_multiplier: 0.04
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 0.01
+
+seed: 42
+
+logger:
+  wandb:
+    project: "ssdgm-vary"
+    name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "train_varied_labeled"
+    group: ${modelname}-${dataset}
+    tags: 
+      - ${name}
+      - ${modelname}
+      - ${dataset}
+      - "varying"
+      - "labeled"
+      - ${n_samples_train_labeled}
+    notes: "Varying the number of labeled observations."
+
+hydra:
+  run:
+    dir: logs/experiments/runs/${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}_${now:%H-%M-%S}

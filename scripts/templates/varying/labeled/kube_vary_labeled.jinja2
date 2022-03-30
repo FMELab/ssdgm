@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: {{ job_name }}-
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      priorityClassName: research-low
+      restartPolicy: "Never"
+      containers:
+        - name: ssdgm
+          image: {{ image }}
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: WANDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wandb-secret
+                  key: secret
+            - name: WANDB_CONFIG_DIR
+              value: "/workspace/ssdgm/.config/wandb"
+            - name: WANDB_CACHE_DIR
+              value: "/workspace/ssdgm/.cache/wandb"
+            - name: MPLCONFIGDIR
+              value: "/workspace/ssdgm/.config/matplotlib"
+            - name: MKL_NUM_THREADS
+              value: "{{ cpus }}"
+            - name: OMP_NUM_THREADS
+              value: "{{ cpus }}"
+          resources:
+            limits:
+              {%- if use_gpu %}
+              nvidia.com/gpu: "1"
+              {%- endif %}
+              cpu: "{{ cpus }}"
+              memory: "{{ memory }}Gi"
+            requests:
+              {%- if use_gpu %}
+              nvidia.com/gpu: "1"
+              {%- endif %}
+              cpu: "{{ cpus }}"
+              memory: "{{ memory }}Gi"
+          volumeMounts:
+            - mountPath: /workspace/ssdgm
+              name: localdir
+          command: ["bash", "{{ script_path }}"]
+      imagePullSecrets:
+        - name: lsx-registry
+        - name: wandb-secret
+      volumes:
+        - name: localdir
+          cephfs:
+            monitors:
+              - 132.187.14.16,132.187.14.17,132.187.14.19,132.187.14.20
+            user: studerhard
+            path: "/home/stud/erhard/ssdgm"
+            secretRef:
+              name: ceph-secret

@@ -1,0 +1,7 @@
+experiment:
+  n_labeled_examples: [100, 200, 300, 400, 500]
+  run_groups:
+     - name: "1"
+       models: ["mlp", "autoencoder", "vae", "m2vae", "srgan", "semigan", "ssdkl"]
+     - name: "2"
+       models: ["autoencoderregressor", "deterministicpredictor", "probabilisticpredictor"]

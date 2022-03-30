@@ -5,7 +5,7 @@
 
 defaults:
   - override /datamodule: skillcraft.yaml
-  - override /model: autoencoder_regressor.yaml
+  - override /model: autoencoderregressor.yaml
   - override /callbacks: default.yaml
   - override /logger: wandb.yaml
   - override /trainer: experiment.yaml

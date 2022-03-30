@@ -1,0 +1,11 @@
+#!/bin/bash
+# Schedule execution of many runs
+# Run from root folder with: bash bash/schedule.sh
+
+{%- for datamodule in datamodules %}
+  {%- for n in n_labeled %}
+  python train.py experiment=varying/labeled/{{model_name}}_{{datamodules[datamodule].name}} logger = wandb ++test=True ++datamodule.n_samples_train_labeled={{n}}
+  {%- endfor %}
+{%- endfor%}
+
+

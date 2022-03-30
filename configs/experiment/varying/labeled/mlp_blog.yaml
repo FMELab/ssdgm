@@ -1,0 +1,46 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=varying/labeled/mlp_blog.yaml
+
+defaults:
+  - override /datamodule: blog.yaml
+  - override /model: mlp.yaml
+  - override /callbacks: default.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: vary_labeled.yaml
+
+name: "vary_labeled"
+modelname: "mlp"
+dataset: "blog"
+
+datamodule:
+  use_unlabeled_dataloader: False
+  batch_size: 128
+
+model:
+  in_features: 276
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.1
+  lr: 0.002
+
+seed: 42
+
+logger:
+  wandb:
+    project: "ssdgm-vary"
+    name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "train_varied_labeled"
+    group: ${modelname}-${dataset}
+    tags: 
+      - ${name}
+      - ${modelname}
+      - ${dataset}
+      - "varying"
+      - "labeled"
+      - ${n_samples_train_labeled}
+    notes: "Varying the number of labeled observations."
+
+hydra:
+  run:
+    dir: logs/experiments/runs/${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}_${now:%H-%M-%S}
