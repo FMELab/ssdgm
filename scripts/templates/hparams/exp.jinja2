@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py -m hparams_search=optuna_{{ model_name}} experiment=hyper/exp1/{{ model_name + "_" + datamodule_name }}.yaml
+# python train.py -m hparams_search=optuna_{{ model_name}} experiment=hyper/{{ experiment_name }}/{{ model_name + "_" + datamodule_name }}.yaml
 
 defaults:
   - override /datamodule: {{ datamodule_name }}.yaml
@@ -20,43 +20,82 @@ datamodule:
 {%- endif %}
 
 model:
-  {%- if model_name == "mlp" %}
+{%- if model_name == "mlp" %}
   in_features: {{ features }}
-  {%- elif model_name == "autoencoder" %}
+{%- elif model_name == "autoencoder" %}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
-  {%- elif model_name == "autoencoderregressor" %}
+{%- elif model_name == "autoencoderregressor" %}
+  {%- if datamodule_name == "blog" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-03-29_10-21-57/checkpoints/epoch_160.ckpt
+  {%- elif datamodule_name == "ctslice" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-03-29_10-42-44/checkpoints/epoch_140.ckpt
+  {%- elif datamodule_name == "elevators" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/elevators/100/2022-03-29_10-57-39/checkpoints/epoch_092.ckpt
+  {%- elif datamodule_name == "parkinson" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/parkinson/100/2022-03-29_11-00-11/checkpoints/epoch_023.ckpt
+  {%- elif datamodule_name == "protein" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-03-29_11-00-29/checkpoints/epoch_054.ckpt
+  {%- elif datamodule_name == "skillcraft" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/skillcraft/100/2022-03-29_11-04-57/checkpoints/epoch_027.ckpt
+  {%- endif %}
   reg_in_features: {{ latent }}
-  {%- elif model_name == "vae"%}
+{%- elif model_name == "vae"%}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
-  {%- elif model_name == "deterministicpredictor" %}
+{%- elif model_name == "deterministicpredictor" %}
+  {%- if datamodule_name == "blog" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-03-29_10-22-02/checkpoints/epoch_083.ckpt
+  {%- elif datamodule_name == "ctslice" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-03-29_10-26-45/checkpoints/epoch_089.ckpt
+  {%- elif datamodule_name == "elevators" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-03-29_10-35-38/checkpoints/epoch_080.ckpt
+  {%- elif datamodule_name == "parkinson" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-03-29_10-37-24/checkpoints/epoch_075.ckpt
+  {%- elif datamodule_name == "protein" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-03-29_10-37-56/checkpoints/epoch_042.ckpt
+  {%- elif datamodule_name == "skillcraft" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-03-29_10-39-45/checkpoints/epoch_061.ckpt
+  {%- endif %}
   reg_in_features: {{ latent }}
-  {%- elif model_name == "probabilisticpredictor" %}
+{%- elif model_name == "probabilisticpredictor" %}
+  {%- if datamodule_name == "blog" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-03-29_10-22-02/checkpoints/epoch_083.ckpt
+  {%- elif datamodule_name == "ctslice" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-03-29_10-26-45/checkpoints/epoch_089.ckpt
+  {%- elif datamodule_name == "elevators" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-03-29_10-35-38/checkpoints/epoch_080.ckpt
+  {%- elif datamodule_name == "parkinson" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-03-29_10-37-24/checkpoints/epoch_075.ckpt
+  {%- elif datamodule_name == "protein" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-03-29_10-37-56/checkpoints/epoch_042.ckpt
+  {%- elif datamodule_name == "skillcraft" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-03-29_10-39-45/checkpoints/epoch_061.ckpt
+  {%- endif %}
   reg_in_features: {{ latent }}
-  {%- elif model_name == "m2vae" %}
+{%- elif model_name == "m2vae" %}
   enc_in_features: {{ add_1(features) }}
   enc_out_features: {{ latent }}
   dec_in_features: {{ add_1(latent) }}
   dec_out_features: {{ features }}
   reg_in_features: {{ features }}
-  {%- elif model_name == "srgan" %}
+{%- elif model_name == "srgan" %}
   gen_out_features: {{ features }}
   dis_in_features: {{ features }}
-  {%- elif model_name == "semigan" %}
+{%- elif model_name == "semigan" %}
   dis_x_in_features: {{ features }}
   dis_xy_in_features: {{ add_1(features) }}
   gen_x_out_features: {{ features }}
   inv_in_features: {{ features }}
   infer_in_features: {{ features }}
-  {%- elif model_name == "ssdkl" %}
+{%- elif model_name == "ssdkl" %}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}
-  {%- endif %}
+{%- endif %}
 
 seed: 42
 
