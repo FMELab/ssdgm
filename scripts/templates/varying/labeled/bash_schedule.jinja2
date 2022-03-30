@@ -4,7 +4,7 @@
 
 {%- for datamodule in datamodules %}
   {%- for n in n_labeled %}
-  python train.py experiment=varying/labeled/{{model_name}}_{{datamodules[datamodule].name}} logger = wandb ++test=True ++datamodule.n_samples_train_labeled={{n}}
+  python train.py experiment=varying/labeled/{{model_name}}_{{datamodules[datamodule].name}} ++test=True ++datamodule.n_samples_train_labeled={{n}} logger=wandb
   {%- endfor %}
 {%- endfor%}
 

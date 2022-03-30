@@ -20,6 +20,7 @@ datamodule:
 
 model:
   reg_in_features: 2
+  vae_checkpoint_path: ${original_work_dir}//home/flo/ssdgm/logs/experiments/runs/checkpointing/vae/protein/100/2022-03-29_10-37-56/checkpoints/epoch_042.ckpt
   leaky_relu_slope: 0.01
   dropout_proba: 0.2
   lr: 0.00001
@@ -38,7 +39,6 @@ logger:
       - ${dataset}
       - "varying"
       - "labeled"
-      - ${n_samples_train_labeled}
     notes: "Varying the number of labeled observations."
 
 hydra:

@@ -20,6 +20,7 @@ datamodule:
 
 model:
   reg_in_features: 2
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-03-29_10-35-38/checkpoints/epoch_080.ckpt
   leaky_relu_slope: 0.11
   dropout_proba: 0.4
   lr: 0.0006
@@ -38,7 +39,6 @@ logger:
       - ${dataset}
       - "varying"
       - "labeled"
-      - ${n_samples_train_labeled}
     notes: "Varying the number of labeled observations."
 
 hydra:

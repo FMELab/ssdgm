@@ -28,7 +28,7 @@ def start_config(run_info, model_info, yaml, dry_run=True):
     job_name_base_string = yaml["job_name"]
     script_path_base_string = yaml["script_path"]
     for m in models:
-        job_name = job_name_base_string + m
+        job_name = "-".join([job_name_base_string, m])
         yaml["job_name"] = job_name
 
         script_filename = "schedule_" + m + ".sh"
@@ -38,7 +38,7 @@ def start_config(run_info, model_info, yaml, dry_run=True):
             **yaml
         )
 
-        print(output_text)
+        #print(output_text)
         if not dry_run:
             try:
                 command = "kubectl -n studerhard create -f -"
@@ -75,4 +75,4 @@ if __name__ == '__main__':
     }
 
 
-    start_config(run_info, model_info, yaml_dict, dry_run=True)
+    start_config(run_info, model_info, yaml_dict, dry_run=False)
