@@ -68,7 +68,7 @@ if __name__ == '__main__':
     yaml_dict = {
         "job_name": "{}".format("vary-labeled"),
         "image": "ls6-stud-registry.informatik.uni-wuerzburg.de/studerhard/ssdgm-pytorch:0.0.5",
-        "cpus": 12,
+        "cpus": 16,
         "memory": 12,
         "use_gpu": False,
         "script_path": "/workspace/ssdgm/bash/varying/labeled/"
