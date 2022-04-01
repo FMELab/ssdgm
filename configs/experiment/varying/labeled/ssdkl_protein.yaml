@@ -20,16 +20,16 @@ datamodule:
 model:
   enc_in_features: 9
   enc_out_features: 2
-  variance_loss_multiplier: 0.112
+  variance_loss_multiplier: 0.11218319111395908
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.00005
+  lr: 5.041942103468415e-05
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}

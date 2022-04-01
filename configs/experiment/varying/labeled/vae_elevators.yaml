@@ -25,13 +25,13 @@ model:
   regularization_loss_multiplier: 0.002
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.0001
+  lr: 9.615903612009528e-05
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}

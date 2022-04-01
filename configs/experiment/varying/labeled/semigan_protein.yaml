@@ -23,27 +23,27 @@ model:
   gen_x_out_features: 9
   inv_in_features: 9
   infer_in_features: 9
-  dis_x_multiplier: 0.009
-  dis_y_multiplier: 2.835
-  dis_xy_multiplier: 0.194
-  gen_x_multiplier: 0.073
-  gen_y_multiplier: 1.547
-  gen_xy_multiplier: 0.092
-  translation_multiplier: 0.003
-  reconstruction_multiplier: 0.266
-  inverse_multiplier: 0.095
-  synthesized_multiplier: 2.873
-  consistency_multiplier: 0.512
+  dis_x_multiplier: 0.008974635444246865
+  dis_y_multiplier: 2.8345033236648494
+  dis_xy_multiplier: 0.1944289466574446
+  gen_x_multiplier: 0.07320824659621367
+  gen_y_multiplier: 1.546892051225448
+  gen_xy_multiplier: 0.09174543803750816
+  translation_multiplier: 0.002905480072152793	
+  reconstruction_multiplier: 0.26631313169039217
+  inverse_multiplier: 0.09450022734450311
+  synthesized_multiplier: 2.8732196065017215
+  consistency_multiplier: 0.5124747592089854
   sufficient_inference_epoch: 28
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.00001
+  lr: 1.0315527254515332e-05
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}

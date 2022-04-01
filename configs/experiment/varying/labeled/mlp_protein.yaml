@@ -22,13 +22,13 @@ model:
   in_features: 9
   leaky_relu_slope: 0.06
   dropout_proba: 0.6
-  lr: 0.003
+  lr: 0.002945575307214123
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}

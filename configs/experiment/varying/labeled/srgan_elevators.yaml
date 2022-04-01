@@ -20,16 +20,16 @@ datamodule:
 model:
   gen_out_features: 18
   dis_in_features: 18
-  gradient_penalty_multiplier: 0.008
+  gradient_penalty_multiplier: 0.008070599936792076	
   leaky_relu_slope: 0.01
   dropout_proba: 0.6
-  lr: 0.00003
+  lr: 3.4162843227641076e-05
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}

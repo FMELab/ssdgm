@@ -23,16 +23,16 @@ model:
   dec_in_features: 3
   dec_out_features: 18
   reg_in_features: 18
-  regressor_loss_multiplier: 0.04
+  regressor_loss_multiplier: 0.039687533900392716
   leaky_relu_slope: 0.01
   dropout_proba: 0.9
-  lr: 0.01
+  lr: 0.009625940446379714
 
 seed: 42
 
 logger:
   wandb:
-    project: "ssdgm-vary"
+    project: "ssdgm-vary-labeled"
     name: ${name}/${modelname}/${dataset}/${datamodule.n_samples_train_labeled}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     job_type: "train_varied_labeled"
     group: ${modelname}-${dataset}
