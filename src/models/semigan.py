@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError, ExplainedVariance, MeanAbsoluteError, MeanAbsolutePercentageError, R2Score
 
 from src.models.modules.dense import DenseNetFcn, Fcn
 
@@ -119,6 +119,10 @@ class SemiGAN(pl.LightningModule):
             {
                 "MSE": MeanSquaredError(),
                 "RMSE": MeanSquaredError(squared=False),
+                "ExplainedVariance": ExplainedVariance(),
+                "MAE": MeanAbsoluteError(),
+                "MAPE": MeanAbsolutePercentageError(),
+                "R2": R2Score(),
             }
         )
 

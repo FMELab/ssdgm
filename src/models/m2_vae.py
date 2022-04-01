@@ -6,7 +6,7 @@ from src.models.modules.dense import Fcn, VaeEncoder
 
 from src.models.vae import VariationalAutoencoder
 
-from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError, ExplainedVariance, MeanAbsoluteError, MeanAbsolutePercentageError, R2Score
 from typing import Any, List
 
 class M2Predictor(pl.LightningModule):
@@ -58,6 +58,10 @@ class M2Predictor(pl.LightningModule):
             {
                 "MSE": MeanSquaredError(),
                 "RMSE": MeanSquaredError(squared=False),
+                "ExplainedVariance": ExplainedVariance(),
+                "MAE": MeanAbsoluteError(),
+                "MAPE": MeanAbsolutePercentageError(),
+                "R2": R2Score(),
             }
         )
 

@@ -4,7 +4,7 @@ import torch as T
 from src.models.modules.dense import Fcn
 
 from src.models.vae import VariationalAutoencoder
-from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError, ExplainedVariance, MeanAbsoluteError, MeanAbsolutePercentageError, R2Score
 from typing import Any, List
 
 class ProbabilisticPredictor(pl.LightningModule):
@@ -39,6 +39,10 @@ class ProbabilisticPredictor(pl.LightningModule):
             {
                 "MSE": MeanSquaredError(),
                 "RMSE": MeanSquaredError(squared=False),
+                "ExplainedVariance": ExplainedVariance(),
+                "MAE": MeanAbsoluteError(),
+                "MAPE": MeanAbsolutePercentageError(),
+                "R2": R2Score(),
             }
         )
 

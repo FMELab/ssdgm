@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch import nn
 
-from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError
+from torchmetrics import MetricCollection, MetricTracker, MeanSquaredError, ExplainedVariance, MeanAbsoluteError, MeanAbsolutePercentageError, R2Score
 
 from src.models.autoencoder import Autoencoder
 from src.models.modules.dense import Fcn
@@ -43,6 +43,10 @@ class AutoencoderRegressor(pl.LightningModule):
             {
                 "MSE": MeanSquaredError(),
                 "RMSE": MeanSquaredError(squared=False),
+                "ExplainedVariance": ExplainedVariance(),
+                "MAE": MeanAbsoluteError(),
+                "MAPE": MeanAbsolutePercentageError(),
+                "R2": R2Score(),
             }
         )
 
