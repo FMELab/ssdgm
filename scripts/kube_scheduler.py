@@ -12,11 +12,12 @@ DATETIME_FORMAT = "%Y-%m-%d-%H-%M-%S"
 TEMPLATE_FILE = "hparams/kube.jinja2"
 
 
-datamodules = info["exp"]["datamodules"]
 
 def start_config(args, info, yaml, dry_run=True):
     template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
     template = Environment(loader=FileSystemLoader(template_path)).get_template(TEMPLATE_FILE)
+
+    datamodules = info["exp"]["datamodules"]
 
     job_name_base_string = yaml["job_name"]
     for run in info["hyper"]["hyperparameter_tuning"]:
