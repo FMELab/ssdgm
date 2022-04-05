@@ -1,0 +1,38 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_probabilisticpredictor experiment=hyper/exp4/probabilisticpredictor_ctslice.yaml
+
+defaults:
+  - override /datamodule: ctslice.yaml
+  - override /model: probabilisticpredictor.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: experiment.yaml
+
+name: "probabilisticpredictor"
+dataset: "ctslice"
+datamodule:
+  use_unlabeled_dataloader: False
+
+model:
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-05_11-12-33/checkpoints/epoch_080.ckpt
+  reg_in_features: 2
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${dataset}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "probabilisticpredictor_ctslice"
+    tags: 
+      - ${name}
+      - "ctslice"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp4/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
