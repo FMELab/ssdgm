@@ -12,7 +12,7 @@ DATETIME_FORMAT = "%Y-%m-%d-%H-%M-%S"
 TEMPLATE_FILE = "hparams/kube.jinja2"
 
 
-
+datamodules = info["exp"]["datamodules"]
 
 def start_config(args, info, yaml, dry_run=True):
     template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
@@ -22,10 +22,10 @@ def start_config(args, info, yaml, dry_run=True):
     for run in info["hyper"]["hyperparameter_tuning"]:
         if args.round == run["round"]:
             for model in run["models"]:
-                for datamodule in info["exp"]["datamodules"]:  
-                    yaml["job_name"] = f"{job_name_base_string}-{model['name']}-{datamodule['name']}"
-                    args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"]
-                    output_text = template.render(args_str=args_str, datamodule_name=datamodule["name"], **yaml)
+                for _, dm_info in datamodules.items():  
+                    yaml["job_name"] = f"{job_name_base_string}-{model['name']}-{dm_info['name']}"
+                    args_str = "-m" + ", hparams_search=optuna_" + model["name"] + ", experiment=hyper/" + args.experiment_name + "/" + model["name"] + "_" + dm_info["name"]
+                    output_text = template.render(args_str=args_str, datamodule_name=dm_info["name"], **yaml)
                     #print(output_text)
                     if not dry_run:
                         try:
@@ -34,7 +34,7 @@ def start_config(args, info, yaml, dry_run=True):
                             p.communicate(output_text.encode())
                             time.sleep(20)
                         except:
-                            print(f'Could not start job for {model["name"]} - {datamodule["name"]}')
+                            print(f'Could not start job for {model["name"]} - {dm_info["name"]}')
 
 if __name__ == '__main__':
     parser = ArgumentParser()

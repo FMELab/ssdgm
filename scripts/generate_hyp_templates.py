@@ -32,24 +32,27 @@ if __name__ == '__main__':
 
     optuna_template = env.get_template("hparams/optuna.jinja2")
 
-    for model in info_dict["models"]:
-        for datamodule in info_dict["datamodules"]:
+    models = info_dict["models"]
+    datamodules = info_dict["datamodules"]
+
+    for model in models:
+        for _, dm_info in datamodules.items():
             p(hparams_template.render(
                 model_name=model["name"],
-                datamodule_name=datamodule["name"],
-                features=datamodule["features"],
-                latent=datamodule["latent"],
+                datamodule_name=dm_info["name"],
+                features=dm_info["features"],
+                latent=dm_info["latent"],
                 experiment_name=args.experiment_name,
                 )
             )
             hparams_template_string = hparams_template.render(
                     model_name=model["name"],
-                    datamodule_name=datamodule["name"],
-                    features=datamodule["features"],
-                    latent=datamodule["latent"],
+                    datamodule_name=dm_info["name"],
+                    features=dm_info["features"],
+                    latent=dm_info["latent"],
                     experiment_name=args.experiment_name,
             )
-            with open("configs/experiment/hyper/" + args.experiment_name + "/" + model["name"] + "_" + datamodule["name"] + ".yaml", "w") as file:
+            with open("configs/experiment/hyper/" + args.experiment_name + "/" + model["name"] + "_" + dm_info["name"] + ".yaml", "w") as file:
                 file.write(hparams_template_string)
 
             optuna_template_string = optuna_template.render(
