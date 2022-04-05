@@ -32,7 +32,7 @@ datamodule:
   {%- elif datamodule_name == "skillcraft" %}
   batch_size: 64
   {%- endif %}
-{%- elif model_name == "autencoder" %}
+{%- elif model_name == "autoencoder" %}
   {%- if datamodule_name == "blog" %}
   batch_size: 256
   {%- elif datamodule_name == "ctslice" %}

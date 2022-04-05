@@ -15,6 +15,7 @@ modelname: "autoencoder"
 dataset: "blog"
 
 datamodule:
+  batch_size: 256
 
 model:
   enc_in_features: 276
