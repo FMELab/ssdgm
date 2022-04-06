@@ -20,7 +20,11 @@ class SRGAN(pl.LightningModule):
         dis_in_features,
         dis_hidden_features,
         dis_out_features,
-        gradient_penalty_multiplier: float,
+        supervised_loss_multiplier,
+        unsupervised_loss_multiplier,
+        matching_loss_multiplier,
+        contrasting_loss_multiplier,
+        gradient_penalty_multiplier,
         leaky_relu_slope,
         dropout_proba,
         lr: float,
@@ -153,7 +157,9 @@ class SRGAN(pl.LightningModule):
             loss_fake = self._calc_fake_loss(features_fake, features_unlabeled)
             gradient_penalty = self._calc_gradient_penalty(x_fake, x_unlabeled)
 
-            dis_loss = loss_labeled + loss_unlabeled + loss_fake + self.hparams.gradient_penalty_multiplier * gradient_penalty
+            dis_loss = self.hparams.supervised_loss_multiplier * loss_labeled \
+                       + self.hparams.unsupervised_loss_multiplier * (self.hparams.matching_loss_multiplier * loss_unlabeled + self.hparams.contrasting_loss_multiplier * loss_fake) \
+                       + self.hparams.gradient_penalty_multiplier * gradient_penalty
 
             self.log("train/loss_labeled", loss_labeled, on_step=False, on_epoch=True, prog_bar=False)
             self.log("train/loss_unlabeled", loss_unlabeled, on_step=False, on_epoch=True, prog_bar=False)
@@ -166,7 +172,7 @@ class SRGAN(pl.LightningModule):
 
         # train the generator
         if optimizer_idx == 1:
-            gen_loss = self._calc_generator_loss(features_fake, features_unlabeled)
+            gen_loss = self.hparams.matching_loss_multiplier * self._calc_generator_loss(features_fake, features_unlabeled)
 
             self.log("train/gen_loss", gen_loss, on_step=False, on_epoch=True, prog_bar=False)
             return gen_loss

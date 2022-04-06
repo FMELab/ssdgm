@@ -6,6 +6,10 @@ dis_in_features: 18
 dis_hidden_features: [128, 128, 128]
 dis_out_features: 1
 # HYPERPARAMETERS
+supervised_loss_multiplier: 0.01
+unsupervised_loss_multiplier: 0.01
+matching_loss_multiplier: 0.01
+contrasting_loss_multiplier: 0.01
 gradient_penalty_multiplier: 0.01
 leaky_relu_slope: 0.2
 dropout_proba: 0.5

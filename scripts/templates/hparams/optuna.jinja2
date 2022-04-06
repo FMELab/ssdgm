@@ -78,6 +78,26 @@ hydra:
         high: 1e1
         log: True
       {%- elif model_name == "srgan" %}
+      model.supervised_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.unsupervised_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.matching_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.contrasting_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
       model.gradient_penalty_multiplier:
         type: float
         low: 1e-3

@@ -59,6 +59,26 @@ hydra:
         low: 1e-5
         high: 1e-2
         log: True
+      model.supervised_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.unsupervised_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.matching_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
+      model.contrasting_loss_multiplier:
+        type: float
+        low: 1e-3
+        high: 1e1
+        log: True
       model.gradient_penalty_multiplier:
         type: float
         low: 1e-3
