@@ -3,7 +3,7 @@ _target_: src.datamodules.datamodules.ProteinDataModule
 data_dir: ${data_dir} # data_dir is specified in config.yaml
 batch_size: 64
 n_samples_train_labeled: 500
-val_proportion: 0.9
+val_proportion: 0.1
 n_samples_test: 1000
 split_seed: 42
 num_workers: 0
