@@ -72,8 +72,9 @@ class BaseDataModule(LightningDataModule):
             n_samples_train_unlabeled = n_samples - (n_samples_train_labeled + n_samples_val + n_samples_test)
 
             split_lengths = [
-                            n_samples_train_labeled, n_samples_train_unlabeled,
-                            n_samples_val, n_samples_test
+                            n_samples_train_labeled + n_samples_val,
+                            n_samples_train_unlabeled,
+                            n_samples_test
             ]
 
             
@@ -81,11 +82,24 @@ class BaseDataModule(LightningDataModule):
             if self.train_ssdkl:# and self.batch_size == 'None':
                 self.batch_size = n_samples_train_labeled         
             
-            self.data_train_labeled, self.data_train_unlabeled, self.data_val, self.data_test = random_split(
+            # We have to do this to ensure the same batch size for unlabeled and labeled examples in SSDKL
+            if self.train_ssdkl:# and self.batch_size == 'None':
+                self.batch_size = n_samples_train_labeled         
+            
+            self.data_train, self.data_train_unlabeled, self.data_test = random_split(
                                                 dataset=self.dataset,
                                                 lengths=split_lengths,
-                                                generator=torch.Generator().manual_seed(self.hparams.split_seed),
+                                                generator=torch.Generator().manual_seed(42),
             )
+
+    
+            self.data_train_labeled, self.data_val = random_split(
+                                                        dataset=self.data_train,
+                                                        lengths=[n_samples_train_labeled, n_samples_val],
+                                                        generator=torch.Generator().manual_seed(self.hparams.split_seed),
+            )
+
+
             params_dict = self._calc_standardization_params()
 
             # The following modifies the underlying dataset for all data subsets (labeled, unlabeled, val, test) ...
