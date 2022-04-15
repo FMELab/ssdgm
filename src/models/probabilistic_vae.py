@@ -58,7 +58,7 @@ class ProbabilisticPredictor(pl.LightningModule):
     def calc_loss(self, y_hat, y):
         p = self.pdf_normal(y, y_hat, self.hparams.regressor_stddev)
 
-        return -T.mean(T.log(p))
+        return -T.mean(T.log(p + 1e-18))
 
 
     def forward(self, x):
