@@ -30,7 +30,7 @@ def train(config: DictConfig) -> Optional[float]:
         Optional[float]: Metric score for hyperparameter optimization.
     """
 
-    for i in range(10):
+    for i in range(30):
         # Number of threads used for training the model
         #torch.set_num_threads(int(os.environ["NUM_PYTORCH_THREADS"]))
         # Set seed for random number generators in pytorch, numpy and python.random
