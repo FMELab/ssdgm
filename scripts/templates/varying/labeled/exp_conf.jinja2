@@ -20,31 +20,31 @@ datamodule:
 {%- endif %}
 {%- if model_name == "mlp" %}
   {%- if datamodule_name == "blog" %}
-  batch_size: 128
+  batch_size: 64
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 256
+  batch_size: 128
   {%- elif datamodule_name == "elevators" %}
   batch_size: 256
   {%- elif datamodule_name == "parkinson" %}
   batch_size: 128
   {%- elif datamodule_name == "protein" %}
-  batch_size: 256
+  batch_size: 128
   {%- elif datamodule_name == "skillcraft" %}
   batch_size: 64
   {%- endif %}
 {%- elif model_name == "autoencoder" %}
   {%- if datamodule_name == "blog" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 256 
+  batch_size: 128 
   {%- elif datamodule_name == "elevators" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "parkinson" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "protein" %}
-  batch_size: 128
+  batch_size: 64
   {%- elif datamodule_name == "skillcraft" %}
-  batch_size: 256
+  batch_size: 128
   {%- endif %}
 {%- elif model_name == "autoencoderregressor" %}
   {%- if datamodule_name == "blog" %}
@@ -52,7 +52,7 @@ datamodule:
   {%- elif datamodule_name == "ctslice" %}
   batch_size: 64
   {%- elif datamodule_name == "elevators" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "parkinson" %}
   batch_size: 64
   {%- elif datamodule_name == "protein" %}
@@ -62,37 +62,23 @@ datamodule:
   {%- endif %}
 {%- elif model_name == "vae" %}
   {%- if datamodule_name == "blog" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 128
+  batch_size: 64
   {%- elif datamodule_name == "elevators" %}
-  batch_size: 128
+  batch_size: 64
   {%- elif datamodule_name == "parkinson" %}
-  batch_size: 128
+  batch_size: 64
   {%- elif datamodule_name == "protein" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "skillcraft" %}
-  batch_size: 256
+  batch_size: 128
   {%- endif %}
 {%- elif model_name == "deterministicpredictor" %}
   {%- if datamodule_name == "blog" %}
-  batch_size: 128
+  batch_size: 256
   {%- elif datamodule_name == "ctslice" %}
   batch_size: 64
-  {%- elif datamodule_name == "elevators" %}
-  batch_size: 128
-  {%- elif datamodule_name == "parkinson" %}
-  batch_size: 128
-  {%- elif datamodule_name == "protein" %}
-  batch_size: 64
-  {%- elif datamodule_name == "skillcraft" %}
-  batch_size: 64
-  {%- endif %}
-{%- elif model_name == "probabilisticpredictor" %}
-  {%- if datamodule_name == "blog" %}
-  batch_size: 64
-  {%- elif datamodule_name == "ctslice" %}
-  batch_size: 128
   {%- elif datamodule_name == "elevators" %}
   batch_size: 128
   {%- elif datamodule_name == "parkinson" %}
@@ -100,47 +86,61 @@ datamodule:
   {%- elif datamodule_name == "protein" %}
   batch_size: 64
   {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 128
+  {%- endif %}
+{%- elif model_name == "probabilisticpredictor" %}
+  {%- if datamodule_name == "blog" %}
+  batch_size: 128
+  {%- elif datamodule_name == "ctslice" %}
+  batch_size: 128
+  {%- elif datamodule_name == "elevators" %}
   batch_size: 64
+  {%- elif datamodule_name == "parkinson" %}
+  batch_size: 128
+  {%- elif datamodule_name == "protein" %}
+  batch_size: 64
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 128
   {%- endif %}
 {%- elif model_name == "m2vae" %}
   {%- if datamodule_name == "blog" %}
   batch_size: 128
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 256
-  {%- elif datamodule_name == "elevators" %}
   batch_size: 64
+  {%- elif datamodule_name == "elevators" %}
+  batch_size: 256
   {%- elif datamodule_name == "parkinson" %}
   batch_size: 256
   {%- elif datamodule_name == "protein" %}
-  batch_size: 64
+  batch_size: 128
   {%- elif datamodule_name == "skillcraft" %}
-  batch_size: 256
+  batch_size: 128
   {%- endif %}
 {%- elif model_name == "srgan" %}
   {%- if datamodule_name == "blog" %}
   batch_size: 256
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 64
+  batch_size: 256
   {%- elif datamodule_name == "elevators" %}
   batch_size: 256
   {%- elif datamodule_name == "parkinson" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "protein" %}
-  batch_size: 64
+  batch_size: 256
   {%- elif datamodule_name == "skillcraft" %}
-  batch_size: 64
+  batch_size: 256
   {%- endif %}
 {%- elif model_name == "semigan" %}
   {%- if datamodule_name == "blog" %}
-  batch_size: 128
+  batch_size: 256
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 64
+  batch_size: 128
   {%- elif datamodule_name == "elevators" %}
   batch_size: 256
   {%- elif datamodule_name == "parkinson" %}
   batch_size: 128
   {%- elif datamodule_name == "protein" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "skillcraft" %}
   batch_size: 256
   {%- endif %}
@@ -148,15 +148,15 @@ datamodule:
   {%- if datamodule_name == "blog" %}
   batch_size: 64
   {%- elif datamodule_name == "ctslice" %}
-  batch_size: 256
+  batch_size: 64
   {%- elif datamodule_name == "elevators" %}
-  batch_size: 64
+  batch_size: 256
   {%- elif datamodule_name == "parkinson" %}
-  batch_size: 256
+  batch_size: 128
   {%- elif datamodule_name == "protein" %}
-  batch_size: 64
-  {%- elif datamodule_name == "skillcraft" %}
   batch_size: 256
+  {%- elif datamodule_name == "skillcraft" %}
+  batch_size: 128
   {%- endif %}
 {%- endif %}
 
@@ -164,29 +164,29 @@ model:
 {%- if model_name == "mlp" %}
   in_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.1
-  lr: 0.0016669253515382298
-  {%- elif datamodule_name == "ctslice" %}
   leaky_relu_slope: 0.06
-  dropout_proba: 0.3
-  lr: 0.00982891695303257
+  dropout_proba: 0.9
+  lr: 0.007485290440053866
+  {%- elif datamodule_name == "ctslice" %}
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 4.797685302744537e-05
   {%- elif datamodule_name == "elevators" %}
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.5
-  lr: 0.0013594703216993419
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.6
+  lr: 0.009725984723286908
   {%- elif datamodule_name == "parkinson" %}
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 0.00025872755360896953
+  {%- elif datamodule_name == "protein" %}
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 0.0019792772454519446
+  {%- elif datamodule_name == "skillcraft" %}
   leaky_relu_slope: 0.16
   dropout_proba: 0.4
-  lr: 1.5793306424515745e-05
-  {%- elif datamodule_name == "protein" %}
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.6
-  lr: 0.002945575307214123
-  {%- elif datamodule_name == "skillcraft" %}
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.6
-  lr: 1.2501747655598627e-05
+  lr: 0.0025878947028804664
   {%- endif %}
 {%- elif model_name == "autoencoder" %}
   enc_in_features: {{ features }}
@@ -196,60 +196,60 @@ model:
   {%- if datamodule_name == "blog" %}
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.0002055985968951224
+  lr: 0.0002696113908815146
   {%- elif datamodule_name == "ctslice" %}
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.000954169843670339
+  lr: 0.0009611546990709062
   {%- elif datamodule_name == "elevators" %}
-  leaky_relu_slope: 0.06
+  leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.009865036810403262
+  lr: 0.001619271859499307
   {%- elif datamodule_name == "parkinson" %}
   leaky_relu_slope: 0.11
   dropout_proba: 0.1
-  lr: 0.0016756785463746219
+  lr: 0.0011120409182561407
   {%- elif datamodule_name == "protein" %}
-  leaky_relu_slope: 0.01
+  leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.0004402675311079537
+  lr: 0.0031558629992637587
   {%- elif datamodule_name == "skillcraft" %}
   leaky_relu_slope: 0.01
   dropout_proba: 0.2
-  lr: 0.0005843481700219177	
+  lr: 0.0006975983097596805	
   {%- endif %}
 {%- elif model_name == "autoencoderregressor" %}
   reg_in_features: {{ latent }}
   {%- if datamodule_name == "blog" %}
   checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-04-05_10-59-23/checkpoints/epoch_081.ckpt
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.1
-  lr: 0.006
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.9
+  lr: 0.000832786102384599
   {%- elif datamodule_name == "ctslice" %}
   checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-04-05_11-03-20/checkpoints/epoch_172.ckpt
   leaky_relu_slope: 0.01
-  dropout_proba: 0.5
-  lr: 0.01
+  dropout_proba: 0.2
+  lr: 0.0037245654465036734	
   {%- elif datamodule_name == "elevators" %}
   checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/elevators/100/2022-04-05_10-56-48/checkpoints/epoch_007.ckpt
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.3
-  lr: 0.005
-  {%- elif datamodule_name == "parkinson" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/parkinson/100/2022-04-05_10-56-27/checkpoints/epoch_042.ckpt
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.00001
+  lr: 1.8129649509141985e-05
+  {%- elif datamodule_name == "parkinson" %}
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/parkinson/100/2022-04-05_10-56-27/checkpoints/epoch_042.ckpt
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.3
+  lr: 0.001065562849627157
   {%- elif datamodule_name == "protein" %}
   checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-04-05_10-57-10/checkpoints/epoch_030.ckpt
   leaky_relu_slope: 0.16
-  dropout_proba: 0.9
-  lr: 0.01
+  dropout_proba: 0.1
+  lr: 0.0035005974538582204
   {%- elif datamodule_name == "skillcraft" %}
   checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/skillcraft/100/2022-04-05_10-56-11/checkpoints/epoch_047.ckpt
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.3
-  lr: 0.00001
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 0.008123245085588688
   {%- endif %}
 {%- elif model_name == "vae"%}
   enc_in_features: {{ features }}
@@ -257,101 +257,107 @@ model:
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  regularization_loss_multiplier: 0.001
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.1
-  lr: 0.00034648392581463093
-  {%- elif datamodule_name == "ctslice" %}
-  regularization_loss_multiplier: 0.001
+  regularization_loss_multiplier: 0.7499290704727173
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.007116552789156153
+  lr: 0.00015295596147745118
+  {%- elif datamodule_name == "ctslice" %}
+  regularization_loss_multiplier: 0.3776039481163025
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.1
+  lr: 0.0015759591833383816
   {%- elif datamodule_name == "elevators" %}
-  regularization_loss_multiplier: 0.002
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.1
-  lr: 9.615903612009528e-05
-  {%- elif datamodule_name == "parkinson" %}
-  regularization_loss_multiplier: 0.001
+  regularization_loss_multiplier: 0.29038047790527344
   leaky_relu_slope: 0.16
-  dropout_proba: 0.1
-  lr: 0.0007308285916581812
-  {%- elif datamodule_name == "protein" %}
-  regularization_loss_multiplier: 0.001
+  dropout_proba: 0.2
+  lr: 0.00012365229400121313
+  {%- elif datamodule_name == "parkinson" %}
+  regularization_loss_multiplier: 0.1452866494655609
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.0014083135669907358
-  {%- elif datamodule_name == "skillcraft" %}
-  regularization_loss_multiplier: 0.001
-  leaky_relu_slope: 0.11
+  lr: 0.0006158761719595227
+  {%- elif datamodule_name == "protein" %}
+  regularization_loss_multiplier: 0.0830763503909111
+  leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.0006124446902131488
+  lr: 0.001310120422138788
+  {%- elif datamodule_name == "skillcraft" %}
+  regularization_loss_multiplier: 0.3973061144351959
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.000273151007290301
   {%- endif %}
 {%- elif model_name == "deterministicpredictor" %}
   reg_in_features: {{ latent }}
   {%- if datamodule_name == "blog" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.1
-  lr: 0.009
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 1.1990689418110454e-05
   {%- elif datamodule_name == "ctslice" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-05_11-12-33/checkpoints/epoch_080.ckpt
   leaky_relu_slope: 0.01
-  dropout_proba: 0.3
-  lr: 0.003
+  dropout_proba: 0.1
+  lr: 0.00014904055007820526
   {%- elif datamodule_name == "elevators" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
-  leaky_relu_slope: 0.11
+  leaky_relu_slope: 0.16
   dropout_proba: 0.4
-  lr: 0.0006
+  lr: 0.00013622008399174687	
   {%- elif datamodule_name == "parkinson" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-05_10-57-47/checkpoints/epoch_062.ckpt
   leaky_relu_slope: 0.01
   dropout_proba: 0.4
-  lr: 0.00002
+  lr: 1.7392889644346597e-05
   {%- elif datamodule_name == "protein" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-05_11-00-31/checkpoints/epoch_027.ckpt
   leaky_relu_slope: 0.01
-  dropout_proba: 0.2
-  lr: 0.00001
+  dropout_proba: 0.1
+  lr: 0.005944815383843491
   {%- elif datamodule_name == "skillcraft" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-05_10-57-26/checkpoints/epoch_061.ckpt
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.3
-  lr: 0.00001
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.005169807335327066
   {%- endif %}
 {%- elif model_name == "probabilisticpredictor" %}
   reg_in_features: {{ latent }}
   {%- if datamodule_name == "blog" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.6
-  lr: 0.0001
+  regressor_stddev: 0.05575420971202074
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.8
+  lr: 0.0026271378899261036
   {%- elif datamodule_name == "ctslice" %}
   vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-05_11-12-33/checkpoints/epoch_080.ckpt
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.5
-  lr: 0.0001
-  {%- elif datamodule_name == "elevators" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.6
-  lr: 0.0005
-  {%- elif datamodule_name == "parkinson" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-05_10-57-47/checkpoints/epoch_062.ckpt
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.4
-  lr: 0.00002
-  {%- elif datamodule_name == "protein" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-05_11-00-31/checkpoints/epoch_027.ckpt
+  regressor_stddev: 0.24753867718049447
   leaky_relu_slope: 0.01
   dropout_proba: 0.2
-  lr: 0.00001
-  {%- elif datamodule_name == "skillcraft" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-05_10-57-26/checkpoints/epoch_061.ckpt
+  lr: 0.001338149181612838
+  {%- elif datamodule_name == "elevators" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
+  regressor_stddev: 0.551387176357382
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.1
+  lr: 5.305948016727387e-05
+  {%- elif datamodule_name == "parkinson" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-05_10-57-47/checkpoints/epoch_062.ckpt
+  regressor_stddev: 0.4242891722718716
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.1
+  lr: 0.0045280090211694095
+  {%- elif datamodule_name == "protein" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-05_11-00-31/checkpoints/epoch_027.ckpt
+  regressor_stddev: 0.18006844407074718
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.00001
+  lr: 0.005097806946275194
+  {%- elif datamodule_name == "skillcraft" %}
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-05_10-57-26/checkpoints/epoch_061.ckpt
+  regressor_stddev: 0.06975760397123178
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.1
+  lr: 0.00019944550214862975
   {%- endif %}
 {%- elif model_name == "m2vae" %}
   enc_in_features: {{ add_1(features) }}
@@ -360,69 +366,93 @@ model:
   dec_out_features: {{ features }}
   reg_in_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  regressor_loss_multiplier: 0.062052615541945876
+  regressor_loss_multiplier: 0.46546534873451173
   leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 0.0006857239392589782
+  dropout_proba: 0.8
+  lr: 0.0050465432624074965
   {%- elif datamodule_name == "ctslice" %}
-  regressor_loss_multiplier: 7.053594548977408
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.6
-  lr: 0.004204386571723679	7
+  regressor_loss_multiplier: 7.58754984126677
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.2
+  lr: 0.0014325873281325842
   {%- elif datamodule_name == "elevators" %}
-  regressor_loss_multiplier: 7.6114043895353225
+  regressor_loss_multiplier: 2.1917076021313777
   leaky_relu_slope: 0.16
-  dropout_proba: 0.7
-  lr: 2.4209181945272086e-05
+  dropout_proba: 0.2
+  lr: 0.0059354852080986086
   {%- elif datamodule_name == "parkinson" %}
-  regressor_loss_multiplier: 0.0070689749506246055
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 0.00314288089084011
+  regressor_loss_multiplier: 1.4707742292162231
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.0089283755682975
   {%- elif datamodule_name == "protein" %}
-  regressor_loss_multiplier: 7.868918205127268
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 1.2721230023107338e-05
+  regressor_loss_multiplier: 3.4013527250377025
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 1.9367253804469228e-05
   {%- elif datamodule_name == "skillcraft" %}
-  regressor_loss_multiplier: 0.039687533900392716
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 0.009625940446379714
+  regressor_loss_multiplier: 1.6970898597370665
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.0008777980488852976
   {%- endif %}
 {%- elif model_name == "srgan" %}
   gen_out_features: {{ features }}
   dis_in_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  gradient_penalty_multiplier: 0.017833444543692983
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.4
-  lr: 0.009679602495711103
+  supervised_loss_multiplier: 0.008610880332886801
+  unsupervised_loss_multiplier: 0.10384577920597901
+  matching_loss_multiplier: 0.0016069176424631105
+  contrasting_loss_multiplier: 0.019946289629559327
+  gradient_penalty_multiplier: 0.003368664214324229
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.9
+  lr: 1.3356693587804988e-05
   {%- elif datamodule_name == "ctslice" %}
-  gradient_penalty_multiplier: 0.6728999322991118
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.3
-  lr: 0.00719092491730789
-  {%- elif datamodule_name == "elevators" %}
-  gradient_penalty_multiplier: 0.008070599936792076	
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.6
-  lr: 3.4162843227641076e-05
-  {%- elif datamodule_name == "parkinson" %}
-  gradient_penalty_multiplier: 0.0042634850045299485
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.4
-  lr: 1.001357224062773e-05
-  {%- elif datamodule_name == "protein" %}
-  gradient_penalty_multiplier: 0.001730898188577648
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.5
-  lr: 3.8381822965681405e-05
-  {%- elif datamodule_name == "skillcraft" %}
-  gradient_penalty_multiplier: 0.006218319077038507
+  supervised_loss_multiplier: 0.009935023909063692
+  unsupervised_loss_multiplier: 0.04380580767905655
+  matching_loss_multiplier: 1.0524574681335637
+  contrasting_loss_multiplier: 0.008226074946221037
+  gradient_penalty_multiplier: 0.0020319809838424984
   leaky_relu_slope: 0.06
+  dropout_proba: 0.5
+  lr: 0.005280796376895365
+  {%- elif datamodule_name == "elevators" %}
+  supervised_loss_multiplier: 0.036079639832717135
+  unsupervised_loss_multiplier: 0.0038985812937172354
+  matching_loss_multiplier: 0.9935282276247069
+  contrasting_loss_multiplier: 0.05416462512423587
+  gradient_penalty_multiplier: 0.0026331852941122095
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.5
+  lr: 0.006623437993996283
+  {%- elif datamodule_name == "parkinson" %}
+  supervised_loss_multiplier: 0.006642213634924794
+  unsupervised_loss_multiplier: 0.03130541602691677
+  matching_loss_multiplier: 2.5918633385570176
+  contrasting_loss_multiplier: 0.003339127237061009
+  gradient_penalty_multiplier: 0.0034269179772892246
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.3
+  lr: 0.0020104782808199506
+  {%- elif datamodule_name == "protein" %}
+  supervised_loss_multiplier: 0.27223234620165027
+  unsupervised_loss_multiplier: 0.14436674869967597
+  matching_loss_multiplier: 0.5499742082743271
+  contrasting_loss_multiplier: 0.01265511093196832
+  gradient_penalty_multiplier: 4.122916489764787
+  leaky_relu_slope: 0.16
   dropout_proba: 0.6
-  lr: 4.994984744790664e-05
+  lr: 0.0017072647278086705	
+  {%- elif datamodule_name == "skillcraft" %}
+  supervised_loss_multiplier: 3.9267871128319225
+  unsupervised_loss_multiplier: 0.002978702506400388
+  matching_loss_multiplier: 0.9005629964093976
+  contrasting_loss_multiplier: 8.435361804658942
+  gradient_penalty_multiplier: 0.010461802800955492
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.5
+  lr: 0.004716594036913435
   {%- endif %}
 {%- elif model_name == "semigan" %}
   dis_x_in_features: {{ features }}
@@ -431,135 +461,135 @@ model:
   inv_in_features: {{ features }}
   infer_in_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  dis_x_multiplier: 0.08637495620714902
-  dis_y_multiplier: 0.10036854220117347 
-  dis_xy_multiplier: 7.413433368674298
-  gen_x_multiplier: 0.0011040759672616754
-  gen_y_multiplier: 0.6169802230738324
-  gen_xy_multiplier: 0.0019300702389161675
-  translation_multiplier: 0.0010202019060914214	
-  reconstruction_multiplier: 9.753689140972993
-  inverse_multiplier: 0.3055181433339665	
-  synthesized_multiplier: 2.830168169055649
-  consistency_multiplier: 0.0030583744901998317	
-  sufficient_inference_epoch: 29
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.2
-  lr: 0.006382890119440051
-  {%- elif datamodule_name == "ctslice" %}
-  dis_x_multiplier: 0.0036231766306828567
-  dis_y_multiplier: 1.5172922775770448
-  dis_xy_multiplier: 0.006404854675916175
-  gen_x_multiplier: 0.004514646718778425	
-  gen_y_multiplier: 0.004540076719227353
-  gen_xy_multiplier: 1.8125870836716231
-  translation_multiplier: 0.45791923103229365
-  reconstruction_multiplier: 0.12366924205139143
-  inverse_multiplier: 0.027247203571621997	
-  synthesized_multiplier: 3.2270237615158006	
-  consistency_multiplier: 0.03713474360443033
-  sufficient_inference_epoch: 42
-  leaky_relu_slope: 0.11
+  dis_x_multiplier: 5.032882032533178
+  dis_y_multiplier: 0.00508822411975799
+  dis_xy_multiplier: 3.730179315901335
+  gen_x_multiplier: 0.010290573156064837
+  gen_y_multiplier: 0.08063107822755193
+  gen_xy_multiplier: 0.7177670815740745
+  translation_multiplier: 2.8046392648973284
+  reconstruction_multiplier: 0.006837119826232767
+  inverse_multiplier: 5.390105122162414
+  synthesized_multiplier: 2.5754971748827056
+  consistency_multiplier: 5.014802125383471
+  sufficient_inference_epoch: 38
+  leaky_relu_slope: 0.16
   dropout_proba: 0.6
-  lr: 0.0033534074919780305
+  lr: 0.0006166215484844472
+  {%- elif datamodule_name == "ctslice" %}
+  dis_x_multiplier: 0.06269971482290984
+  dis_y_multiplier: 0.04985740234246874
+  dis_xy_multiplier: 0.009121407777052518
+  gen_x_multiplier: 1.457747502235731
+  gen_y_multiplier: 0.006816629845812221
+  gen_xy_multiplier: 0.005532796742376421
+  translation_multiplier: 0.014407386486024156
+  reconstruction_multiplier: 1.2557986978242326
+  inverse_multiplier: 4.548269786984396
+  synthesized_multiplier: 9.716791274892687
+  consistency_multiplier: 0.04384122981504651
+  sufficient_inference_epoch: 11
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.4
+  lr: 0.007069944627101823
   {%- elif datamodule_name == "elevators" %}
-  dis_x_multiplier: 3.1591894102529303
-  dis_y_multiplier: 2.675048325442788
-  dis_xy_multiplier: 0.7768131628218393
-  gen_x_multiplier: 0.012075027902063414
-  gen_y_multiplier: 0.012868863259458877
-  gen_xy_multiplier: 0.3792792762128885
-  translation_multiplier: 2.0879134040653096
-  reconstruction_multiplier: 0.015138252135890165
-  inverse_multiplier: 0.17308126485538067
-  synthesized_multiplier: 5.7719425405719385
-  consistency_multiplier: 0.0016634505627891674
-  sufficient_inference_epoch: 29
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.7
-  lr: 0.009637025547883545
+  dis_x_multiplier: 0.10874390688629104
+  dis_y_multiplier: 0.15256839487336252
+  dis_xy_multiplier: 0.014076013628015445
+  gen_x_multiplier: 0.007077412262823664
+  gen_y_multiplier: 0.004567401449033572
+  gen_xy_multiplier: 2.123457206651863
+  translation_multiplier: 0.13301382204536844
+  reconstruction_multiplier: 0.1406704815382845
+  inverse_multiplier: 0.001566119689896038
+  synthesized_multiplier: 7.624631562621223
+  consistency_multiplier: 0.048715047375625285
+  sufficient_inference_epoch: 37
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.8
+  lr: 0.00039957635635173817
   {%- elif datamodule_name == "parkinson" %}
-  dis_x_multiplier: 6.336568002006844
-  dis_y_multiplier: 0.0022990391946851887
-  dis_xy_multiplier: 1.6005459347341309
-  gen_x_multiplier: 0.0016303153419986473
-  gen_y_multiplier: 0.03369296798800669
-  gen_xy_multiplier: 0.36938454267032644
-  translation_multiplier: 0.0025021320718774747
-  reconstruction_multiplier: 0.23903628502547586
-  inverse_multiplier: 0.08015584650215445
-  synthesized_multiplier: 0.22383061638192137
-  consistency_multiplier: 0.010432506892584363
-  sufficient_inference_epoch: 43
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.5
-  lr: 0.004064679633804722
+  dis_x_multiplier: 0.24304054851254922
+  dis_y_multiplier: 1.1090117261051395
+  dis_xy_multiplier: 0.0017878608313144798
+  gen_x_multiplier: 4.7145284685139535
+  gen_y_multiplier: 0.582973381690159
+  gen_xy_multiplier: 0.0013585748046744206
+  translation_multiplier: 5.97788902526307
+  reconstruction_multiplier: 0.003586722559388901
+  inverse_multiplier: 1.7216514593832755
+  synthesized_multiplier: 3.4267786425093747
+  consistency_multiplier: 3.7605437207991685
+  sufficient_inference_epoch: 32
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.4
+  lr: 0.0036525430876246682
 {%- elif datamodule_name == "protein" %}
-  dis_x_multiplier: 0.008974635444246865
-  dis_y_multiplier: 2.8345033236648494
-  dis_xy_multiplier: 0.1944289466574446
-  gen_x_multiplier: 0.07320824659621367
-  gen_y_multiplier: 1.546892051225448
-  gen_xy_multiplier: 0.09174543803750816
-  translation_multiplier: 0.002905480072152793	
-  reconstruction_multiplier: 0.26631313169039217
-  inverse_multiplier: 0.09450022734450311
-  synthesized_multiplier: 2.8732196065017215
-  consistency_multiplier: 0.5124747592089854
-  sufficient_inference_epoch: 28
+  dis_x_multiplier: 0.4970755147553105
+  dis_y_multiplier: 3.3232629026208436
+  dis_xy_multiplier: 4.4919484912280465
+  gen_x_multiplier: 0.027227405042795166
+  gen_y_multiplier: 0.0038833092528369434
+  gen_xy_multiplier: 2.2704405979520947
+  translation_multiplier: 0.01385239640921212
+  reconstruction_multiplier: 0.01072648139998135
+  inverse_multiplier: 0.006805510359479691
+  synthesized_multiplier: 2.4510824422110793
+  consistency_multiplier: 0.0013165791275356355
+  sufficient_inference_epoch: 17
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 1.0315527254515332e-05
+  lr: 3.2793125873050944e-05
   {%- elif datamodule_name == "skillcraft" %}
-  dis_x_multiplier: 0.06622082060623484
-  dis_y_multiplier: 0.45311207239424295
-  dis_xy_multiplier: 7.820057049487996
-  gen_x_multiplier: 0.004843143827982874	
-  gen_y_multiplier: 9.862808809488888	
-  gen_xy_multiplier: 0.6468509501143345
-  translation_multiplier: 0.003577260492603148
-  reconstruction_multiplier: 0.005813963989927001	
-  inverse_multiplier: 0.08979848970426745
-  synthesized_multiplier: 3.862414285994866
-  consistency_multiplier: 0.004172591117760386
-  sufficient_inference_epoch: 5
+  dis_x_multiplier: 0.0021936400806356043
+  dis_y_multiplier: 1.1092674100040463
+  dis_xy_multiplier: 0.020671548298791597
+  gen_x_multiplier: 4.828714123978608
+  gen_y_multiplier: 0.006037331723290535
+  gen_xy_multiplier: 0.420026408061666
+  translation_multiplier: 0.001304241258930859
+  reconstruction_multiplier: 0.18361462577447465
+  inverse_multiplier: 0.001272782068587255
+  synthesized_multiplier: 2.347595358642922
+  consistency_multiplier: 0.0014040239758785962
+  sufficient_inference_epoch: 35
   leaky_relu_slope: 0.16
-  dropout_proba: 0.8
-  lr: 2.2266046432850647e-05
+  dropout_proba: 0.7
+  lr: 0.0007663785299129579
   {%- endif %}
 {%- elif model_name == "ssdkl" %}
   enc_in_features: {{ features }}
   enc_out_features: {{ latent }}
   {%- if datamodule_name == "blog" %}
-  variance_loss_multiplier: 1.865664169272159
+  variance_loss_multiplier: 2.5772543048540713
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 6.0786383914226836e-05
+  lr: 2.893367660165072e-05
   {%- elif datamodule_name == "ctslice" %}
-  variance_loss_multiplier: 4.0819846412724112
+  variance_loss_multiplier: 0.14721508338003464
   leaky_relu_slope: 0.06
   dropout_proba: 0.2
-  lr: 0.004347255169844543	
+  lr: 0.0025789030276417847
   {%- elif datamodule_name == "elevators" %}
-  variance_loss_multiplier: 1.658156357234787
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.8
-  lr: 1.896484093636931e-05
-  {%- elif datamodule_name == "parkinson" %}
-  variance_loss_multiplier: 0.017771492278626542	
+  variance_loss_multiplier: 2.142732152172109
   leaky_relu_slope: 0.16
-  dropout_proba: 0.8
-  lr: 0.0001157806699109961
+  dropout_proba: 0.5
+  lr: 8.658077405185212e-05
+  {%- elif datamodule_name == "parkinson" %}
+  variance_loss_multiplier: 0.0018351549395429062
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.3
+  lr: 1.8758601881217824e-05
   {%- elif datamodule_name == "protein" %}
-  variance_loss_multiplier: 0.11218319111395908
+  variance_loss_multiplier: 0.002386266481759747
   leaky_relu_slope: 0.06
-  dropout_proba: 0.1
-  lr: 5.041942103468415e-05
+  dropout_proba: 0.5
+  lr: 4.796829933533343e-05
   {%- elif datamodule_name == "skillcraft" %}
-  variance_loss_multiplier: 0.4236587243925422
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.7
-  lr: 1.2095387967134873e-05
+  variance_loss_multiplier: 1.5189458374662532
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.8
+  lr: 0.008001323779731303
   {%- endif %}
 {%- endif %}
 
