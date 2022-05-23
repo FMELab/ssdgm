@@ -178,7 +178,7 @@ class SemiGAN(pl.LightningModule):
         if self.current_epoch >= self.hparams.sufficient_inference_epoch:
             dis_loss = dis_x_real_loss + dis_x_fake_loss + dis_y_real_loss + dis_y_fake_loss + dis_xy_real_loss + dis_xy_fake_loss + dis_xy_inference_loss
         else:
-            dis_loss = dis_x_real_loss + dis_x_fake_loss + dis_y_real_loss + dis_y_fake_loss + dis_xy_real_loss + dis_y_fake_loss
+            dis_loss = dis_x_real_loss + dis_x_fake_loss + dis_y_real_loss + dis_y_fake_loss + dis_xy_real_loss + dis_xy_fake_loss
 
 
         return dis_loss  # we do not return the negative loss because the `binary_cross_entropy_with_logits` function already calculates it
