@@ -17,6 +17,8 @@ dataset: "{{ datamodule_name }}"
 datamodule:
 {%- if model_name == "mlp" or model_name == "autoencoderregressor" or model_name == "deterministicpredictor" or model_name == "probabilisticpredictor" %}
   use_unlabeled_dataloader: False
+{%- elif model_name == "ssdkl" %}
+  train_ssdkl: True
 {%- endif %}
 {%- if model_name == "mlp" %}
   {%- if datamodule_name == "blog" %}
@@ -215,8 +217,8 @@ model:
   lr: 0.0031558629992637587
   {%- elif datamodule_name == "skillcraft" %}
   leaky_relu_slope: 0.01
-  dropout_proba: 0.2
-  lr: 0.0006975983097596805	
+  dropout_proba: 0.1
+  lr: 0.0006975983097596805
   {%- endif %}
 {%- elif model_name == "autoencoderregressor" %}
   reg_in_features: {{ latent }}
@@ -257,32 +259,32 @@ model:
   dec_in_features: {{ latent }}
   dec_out_features: {{ features }}
   {%- if datamodule_name == "blog" %}
-  regularization_loss_multiplier: 0.7499290704727173
+  regularization_loss_multiplier: 0.0011869191514767535
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 0.00015295596147745118
+  lr: 0.00015295596147745118	
   {%- elif datamodule_name == "ctslice" %}
-  regularization_loss_multiplier: 0.3776039481163025
+  regularization_loss_multiplier: 0.0012779380073917976
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
   lr: 0.0015759591833383816
   {%- elif datamodule_name == "elevators" %}
-  regularization_loss_multiplier: 0.29038047790527344
+  regularization_loss_multiplier: 0.0023891053978263954
   leaky_relu_slope: 0.16
   dropout_proba: 0.2
   lr: 0.00012365229400121313
   {%- elif datamodule_name == "parkinson" %}
-  regularization_loss_multiplier: 0.1452866494655609
+  regularization_loss_multiplier: 0.024740291025257787
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
   lr: 0.0006158761719595227
   {%- elif datamodule_name == "protein" %}
-  regularization_loss_multiplier: 0.0830763503909111
+  regularization_loss_multiplier: 0.005779682559140115
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
   lr: 0.001310120422138788
   {%- elif datamodule_name == "skillcraft" %}
-  regularization_loss_multiplier: 0.3973061144351959
+  regularization_loss_multiplier: 0.0018149138003218026
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
   lr: 0.000273151007290301
