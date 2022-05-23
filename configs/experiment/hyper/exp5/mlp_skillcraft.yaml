@@ -1,0 +1,37 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py -m hparams_search=optuna_mlp experiment=hyper/exp5/mlp_skillcraft.yaml
+
+defaults:
+  - override /datamodule: skillcraft.yaml
+  - override /model: mlp.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: experiment.yaml
+
+name: "mlp"
+dataset: "skillcraft"
+datamodule:
+  use_unlabeled_dataloader: False
+
+model:
+  in_features: 18
+
+seed: 42
+
+logger:
+  wandb:
+    name: ${name}/${dataset}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    job_type: "hyperparameter_search"
+    group: "mlp_skillcraft"
+    tags: 
+      - ${name}
+      - "skillcraft"
+      - "hyperparameter_search"
+    notes: ""
+
+hydra:
+  sweep:
+    dir: logs/experiments/multiruns/exp5/${name}/${dataset}__${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
