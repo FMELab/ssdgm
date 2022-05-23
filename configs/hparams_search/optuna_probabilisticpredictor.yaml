@@ -59,3 +59,8 @@ hydra:
         low: 1e-5
         high: 1e-2
         log: True
+      model.regressor_stddev:
+        type: float
+        low: 1e-2
+        high: 1e0
+        log: True
