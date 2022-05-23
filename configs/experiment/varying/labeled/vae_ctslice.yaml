@@ -22,7 +22,7 @@ model:
   enc_out_features: 2
   dec_in_features: 2
   dec_out_features: 379
-  regularization_loss_multiplier: 0.3776039481163025
+  regularization_loss_multiplier: 0.0012779380073917976
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
   lr: 0.0015759591833383816
