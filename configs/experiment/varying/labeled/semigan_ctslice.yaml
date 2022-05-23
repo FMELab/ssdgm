@@ -15,7 +15,7 @@ modelname: "semigan"
 dataset: "ctslice"
 
 datamodule:
-  batch_size: 64
+  batch_size: 128
 
 model:
   dis_x_in_features: 379
@@ -23,21 +23,21 @@ model:
   gen_x_out_features: 379
   inv_in_features: 379
   infer_in_features: 379
-  dis_x_multiplier: 0.0036231766306828567
-  dis_y_multiplier: 1.5172922775770448
-  dis_xy_multiplier: 0.006404854675916175
-  gen_x_multiplier: 0.004514646718778425	
-  gen_y_multiplier: 0.004540076719227353
-  gen_xy_multiplier: 1.8125870836716231
-  translation_multiplier: 0.45791923103229365
-  reconstruction_multiplier: 0.12366924205139143
-  inverse_multiplier: 0.027247203571621997	
-  synthesized_multiplier: 3.2270237615158006	
-  consistency_multiplier: 0.03713474360443033
-  sufficient_inference_epoch: 42
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.6
-  lr: 0.0033534074919780305
+  dis_x_multiplier: 0.06269971482290984
+  dis_y_multiplier: 0.04985740234246874
+  dis_xy_multiplier: 0.009121407777052518
+  gen_x_multiplier: 1.457747502235731
+  gen_y_multiplier: 0.006816629845812221
+  gen_xy_multiplier: 0.005532796742376421
+  translation_multiplier: 0.014407386486024156
+  reconstruction_multiplier: 1.2557986978242326
+  inverse_multiplier: 4.548269786984396
+  synthesized_multiplier: 9.716791274892687
+  consistency_multiplier: 0.04384122981504651
+  sufficient_inference_epoch: 11
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.4
+  lr: 0.007069944627101823
 
 seed: 42
 

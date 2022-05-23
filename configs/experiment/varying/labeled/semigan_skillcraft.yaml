@@ -23,21 +23,21 @@ model:
   gen_x_out_features: 18
   inv_in_features: 18
   infer_in_features: 18
-  dis_x_multiplier: 0.06622082060623484
-  dis_y_multiplier: 0.45311207239424295
-  dis_xy_multiplier: 7.820057049487996
-  gen_x_multiplier: 0.004843143827982874	
-  gen_y_multiplier: 9.862808809488888	
-  gen_xy_multiplier: 0.6468509501143345
-  translation_multiplier: 0.003577260492603148
-  reconstruction_multiplier: 0.005813963989927001	
-  inverse_multiplier: 0.08979848970426745
-  synthesized_multiplier: 3.862414285994866
-  consistency_multiplier: 0.004172591117760386
-  sufficient_inference_epoch: 5
+  dis_x_multiplier: 0.0021936400806356043
+  dis_y_multiplier: 1.1092674100040463
+  dis_xy_multiplier: 0.020671548298791597
+  gen_x_multiplier: 4.828714123978608
+  gen_y_multiplier: 0.006037331723290535
+  gen_xy_multiplier: 0.420026408061666
+  translation_multiplier: 0.001304241258930859
+  reconstruction_multiplier: 0.18361462577447465
+  inverse_multiplier: 0.001272782068587255
+  synthesized_multiplier: 2.347595358642922
+  consistency_multiplier: 0.0014040239758785962
+  sufficient_inference_epoch: 35
   leaky_relu_slope: 0.16
-  dropout_proba: 0.8
-  lr: 2.2266046432850647e-05
+  dropout_proba: 0.7
+  lr: 0.0007663785299129579
 
 seed: 42
 

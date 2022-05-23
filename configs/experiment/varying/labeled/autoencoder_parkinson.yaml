@@ -15,7 +15,7 @@ modelname: "autoencoder"
 dataset: "parkinson"
 
 datamodule:
-  batch_size: 256
+  batch_size: 64
 
 model:
   enc_in_features: 19
@@ -24,7 +24,7 @@ model:
   dec_out_features: 19
   leaky_relu_slope: 0.11
   dropout_proba: 0.1
-  lr: 0.0016756785463746219
+  lr: 0.0011120409182561407
 
 seed: 42
 

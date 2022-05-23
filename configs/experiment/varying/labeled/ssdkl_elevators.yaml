@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "elevators"
 
 datamodule:
-  batch_size: 64
+  train_ssdkl: True
+  batch_size: 256
 
 model:
   enc_in_features: 18
   enc_out_features: 2
-  variance_loss_multiplier: 1.658156357234787
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.8
-  lr: 1.896484093636931e-05
+  variance_loss_multiplier: 2.142732152172109
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 8.658077405185212e-05
 
 seed: 42
 

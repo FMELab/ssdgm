@@ -23,10 +23,10 @@ model:
   dec_in_features: 3
   dec_out_features: 19
   reg_in_features: 19
-  regressor_loss_multiplier: 0.0070689749506246055
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 0.00314288089084011
+  regressor_loss_multiplier: 1.4707742292162231
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.5
+  lr: 0.0089283755682975
 
 seed: 42
 

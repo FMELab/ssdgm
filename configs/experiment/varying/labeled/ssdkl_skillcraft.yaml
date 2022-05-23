@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "skillcraft"
 
 datamodule:
-  batch_size: 256
+  train_ssdkl: True
+  batch_size: 128
 
 model:
   enc_in_features: 18
   enc_out_features: 2
-  variance_loss_multiplier: 0.4236587243925422
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.7
-  lr: 1.2095387967134873e-05
+  variance_loss_multiplier: 1.5189458374662532
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.8
+  lr: 0.008001323779731303
 
 seed: 42
 

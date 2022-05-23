@@ -16,14 +16,15 @@ dataset: "blog"
 
 datamodule:
   use_unlabeled_dataloader: False
-  batch_size: 64
+  batch_size: 128
 
 model:
   reg_in_features: 2
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-03-29_10-22-02/checkpoints/epoch_083.ckpt
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.6
-  lr: 0.0001
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
+  regressor_stddev: 0.05575420971202074
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.8
+  lr: 0.0026271378899261036
 
 seed: 42
 

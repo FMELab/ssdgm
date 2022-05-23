@@ -15,7 +15,7 @@ modelname: "semigan"
 dataset: "blog"
 
 datamodule:
-  batch_size: 128
+  batch_size: 256
 
 model:
   dis_x_in_features: 276
@@ -23,21 +23,21 @@ model:
   gen_x_out_features: 276
   inv_in_features: 276
   infer_in_features: 276
-  dis_x_multiplier: 0.08637495620714902
-  dis_y_multiplier: 0.10036854220117347 
-  dis_xy_multiplier: 7.413433368674298
-  gen_x_multiplier: 0.0011040759672616754
-  gen_y_multiplier: 0.6169802230738324
-  gen_xy_multiplier: 0.0019300702389161675
-  translation_multiplier: 0.0010202019060914214	
-  reconstruction_multiplier: 9.753689140972993
-  inverse_multiplier: 0.3055181433339665	
-  synthesized_multiplier: 2.830168169055649
-  consistency_multiplier: 0.0030583744901998317	
-  sufficient_inference_epoch: 29
-  leaky_relu_slope: 0.11
-  dropout_proba: 0.2
-  lr: 0.006382890119440051
+  dis_x_multiplier: 5.032882032533178
+  dis_y_multiplier: 0.00508822411975799
+  dis_xy_multiplier: 3.730179315901335
+  gen_x_multiplier: 0.010290573156064837
+  gen_y_multiplier: 0.08063107822755193
+  gen_xy_multiplier: 0.7177670815740745
+  translation_multiplier: 2.8046392648973284
+  reconstruction_multiplier: 0.006837119826232767
+  inverse_multiplier: 5.390105122162414
+  synthesized_multiplier: 2.5754971748827056
+  consistency_multiplier: 5.014802125383471
+  sufficient_inference_epoch: 38
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.6
+  lr: 0.0006166215484844472
 
 seed: 42
 

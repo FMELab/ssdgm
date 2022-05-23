@@ -15,7 +15,7 @@ modelname: "semigan"
 dataset: "protein"
 
 datamodule:
-  batch_size: 256
+  batch_size: 64
 
 model:
   dis_x_in_features: 9
@@ -23,21 +23,21 @@ model:
   gen_x_out_features: 9
   inv_in_features: 9
   infer_in_features: 9
-  dis_x_multiplier: 0.008974635444246865
-  dis_y_multiplier: 2.8345033236648494
-  dis_xy_multiplier: 0.1944289466574446
-  gen_x_multiplier: 0.07320824659621367
-  gen_y_multiplier: 1.546892051225448
-  gen_xy_multiplier: 0.09174543803750816
-  translation_multiplier: 0.002905480072152793	
-  reconstruction_multiplier: 0.26631313169039217
-  inverse_multiplier: 0.09450022734450311
-  synthesized_multiplier: 2.8732196065017215
-  consistency_multiplier: 0.5124747592089854
-  sufficient_inference_epoch: 28
+  dis_x_multiplier: 0.4970755147553105
+  dis_y_multiplier: 3.3232629026208436
+  dis_xy_multiplier: 4.4919484912280465
+  gen_x_multiplier: 0.027227405042795166
+  gen_y_multiplier: 0.0038833092528369434
+  gen_xy_multiplier: 2.2704405979520947
+  translation_multiplier: 0.01385239640921212
+  reconstruction_multiplier: 0.01072648139998135
+  inverse_multiplier: 0.006805510359479691
+  synthesized_multiplier: 2.4510824422110793
+  consistency_multiplier: 0.0013165791275356355
+  sufficient_inference_epoch: 17
   leaky_relu_slope: 0.06
   dropout_proba: 0.1
-  lr: 1.0315527254515332e-05
+  lr: 3.2793125873050944e-05
 
 seed: 42
 

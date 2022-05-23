@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "blog"
 
 datamodule:
+  train_ssdkl: True
   batch_size: 64
 
 model:
   enc_in_features: 276
   enc_out_features: 2
-  variance_loss_multiplier: 1.865664169272159
+  variance_loss_multiplier: 2.5772543048540713
   leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 6.0786383914226836e-05
+  lr: 2.893367660165072e-05
 
 seed: 42
 

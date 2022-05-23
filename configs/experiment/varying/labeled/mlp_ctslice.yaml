@@ -16,13 +16,13 @@ dataset: "ctslice"
 
 datamodule:
   use_unlabeled_dataloader: False
-  batch_size: 256
+  batch_size: 128
 
 model:
   in_features: 379
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.3
-  lr: 0.00982891695303257
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 4.797685302744537e-05
 
 seed: 42
 

@@ -15,15 +15,19 @@ modelname: "srgan"
 dataset: "skillcraft"
 
 datamodule:
-  batch_size: 64
+  batch_size: 256
 
 model:
   gen_out_features: 18
   dis_in_features: 18
-  gradient_penalty_multiplier: 0.006218319077038507
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.6
-  lr: 4.994984744790664e-05
+  supervised_loss_multiplier: 3.9267871128319225
+  unsupervised_loss_multiplier: 0.002978702506400388
+  matching_loss_multiplier: 0.9005629964093976
+  contrasting_loss_multiplier: 8.435361804658942
+  gradient_penalty_multiplier: 0.010461802800955492
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.5
+  lr: 0.004716594036913435
 
 seed: 42
 

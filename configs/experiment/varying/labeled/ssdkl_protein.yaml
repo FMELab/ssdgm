@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "protein"
 
 datamodule:
-  batch_size: 64
+  train_ssdkl: True
+  batch_size: 256
 
 model:
   enc_in_features: 9
   enc_out_features: 2
-  variance_loss_multiplier: 0.11218319111395908
+  variance_loss_multiplier: 0.002386266481759747
   leaky_relu_slope: 0.06
-  dropout_proba: 0.1
-  lr: 5.041942103468415e-05
+  dropout_proba: 0.5
+  lr: 4.796829933533343e-05
 
 seed: 42
 

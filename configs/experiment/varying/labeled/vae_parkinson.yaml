@@ -15,17 +15,17 @@ modelname: "vae"
 dataset: "parkinson"
 
 datamodule:
-  batch_size: 128
+  batch_size: 64
 
 model:
   enc_in_features: 19
   enc_out_features: 2
   dec_in_features: 2
   dec_out_features: 19
-  regularization_loss_multiplier: 0.001
-  leaky_relu_slope: 0.16
+  regularization_loss_multiplier: 0.1452866494655609
+  leaky_relu_slope: 0.01
   dropout_proba: 0.1
-  lr: 0.0007308285916581812
+  lr: 0.0006158761719595227
 
 seed: 42
 

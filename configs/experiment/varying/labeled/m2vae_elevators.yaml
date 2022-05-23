@@ -15,7 +15,7 @@ modelname: "m2vae"
 dataset: "elevators"
 
 datamodule:
-  batch_size: 64
+  batch_size: 256
 
 model:
   enc_in_features: 19
@@ -23,10 +23,10 @@ model:
   dec_in_features: 3
   dec_out_features: 18
   reg_in_features: 18
-  regressor_loss_multiplier: 7.6114043895353225
+  regressor_loss_multiplier: 2.1917076021313777
   leaky_relu_slope: 0.16
-  dropout_proba: 0.7
-  lr: 2.4209181945272086e-05
+  dropout_proba: 0.2
+  lr: 0.0059354852080986086
 
 seed: 42
 

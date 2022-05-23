@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "parkinson"
 
 datamodule:
-  batch_size: 256
+  train_ssdkl: True
+  batch_size: 128
 
 model:
   enc_in_features: 19
   enc_out_features: 2
-  variance_loss_multiplier: 0.017771492278626542	
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.8
-  lr: 0.0001157806699109961
+  variance_loss_multiplier: 0.0018351549395429062
+  leaky_relu_slope: 0.01
+  dropout_proba: 0.3
+  lr: 1.8758601881217824e-05
 
 seed: 42
 

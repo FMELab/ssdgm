@@ -15,15 +15,19 @@ modelname: "srgan"
 dataset: "parkinson"
 
 datamodule:
-  batch_size: 256
+  batch_size: 64
 
 model:
   gen_out_features: 19
   dis_in_features: 19
-  gradient_penalty_multiplier: 0.0042634850045299485
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.4
-  lr: 1.001357224062773e-05
+  supervised_loss_multiplier: 0.006642213634924794
+  unsupervised_loss_multiplier: 0.03130541602691677
+  matching_loss_multiplier: 2.5918633385570176
+  contrasting_loss_multiplier: 0.003339127237061009
+  gradient_penalty_multiplier: 0.0034269179772892246
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.3
+  lr: 0.0020104782808199506
 
 seed: 42
 

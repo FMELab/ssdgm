@@ -15,15 +15,19 @@ modelname: "srgan"
 dataset: "ctslice"
 
 datamodule:
-  batch_size: 64
+  batch_size: 256
 
 model:
   gen_out_features: 379
   dis_in_features: 379
-  gradient_penalty_multiplier: 0.6728999322991118
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.3
-  lr: 0.00719092491730789
+  supervised_loss_multiplier: 0.009935023909063692
+  unsupervised_loss_multiplier: 0.04380580767905655
+  matching_loss_multiplier: 1.0524574681335637
+  contrasting_loss_multiplier: 0.008226074946221037
+  gradient_penalty_multiplier: 0.0020319809838424984
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.5
+  lr: 0.005280796376895365
 
 seed: 42
 

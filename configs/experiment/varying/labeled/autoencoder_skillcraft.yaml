@@ -15,7 +15,7 @@ modelname: "autoencoder"
 dataset: "skillcraft"
 
 datamodule:
-  batch_size: 256
+  batch_size: 128
 
 model:
   enc_in_features: 18
@@ -24,7 +24,7 @@ model:
   dec_out_features: 18
   leaky_relu_slope: 0.01
   dropout_proba: 0.2
-  lr: 0.0005843481700219177
+  lr: 0.0006975983097596805
 
 seed: 42
 

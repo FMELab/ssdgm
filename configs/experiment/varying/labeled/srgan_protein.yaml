@@ -15,15 +15,19 @@ modelname: "srgan"
 dataset: "protein"
 
 datamodule:
-  batch_size: 64
+  batch_size: 256
 
 model:
   gen_out_features: 9
   dis_in_features: 9
-  gradient_penalty_multiplier: 0.001730898188577648
+  supervised_loss_multiplier: 0.27223234620165027
+  unsupervised_loss_multiplier: 0.14436674869967597
+  matching_loss_multiplier: 0.5499742082743271
+  contrasting_loss_multiplier: 0.01265511093196832
+  gradient_penalty_multiplier: 4.122916489764787
   leaky_relu_slope: 0.16
-  dropout_proba: 0.5
-  lr: 3.8381822965681405e-05
+  dropout_proba: 0.6
+  lr: 0.0017072647278086705
 
 seed: 42
 

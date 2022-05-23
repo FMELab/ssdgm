@@ -20,10 +20,14 @@ datamodule:
 model:
   gen_out_features: 18
   dis_in_features: 18
-  gradient_penalty_multiplier: 0.008070599936792076	
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.6
-  lr: 3.4162843227641076e-05
+  supervised_loss_multiplier: 0.036079639832717135
+  unsupervised_loss_multiplier: 0.0038985812937172354
+  matching_loss_multiplier: 0.9935282276247069
+  contrasting_loss_multiplier: 0.05416462512423587
+  gradient_penalty_multiplier: 0.0026331852941122095
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.5
+  lr: 0.006623437993996283
 
 seed: 42
 

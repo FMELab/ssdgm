@@ -16,13 +16,13 @@ dataset: "blog"
 
 datamodule:
   use_unlabeled_dataloader: False
-  batch_size: 128
+  batch_size: 64
 
 model:
   in_features: 276
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.1
-  lr: 0.0016669253515382298
+  leaky_relu_slope: 0.06
+  dropout_proba: 0.9
+  lr: 0.007485290440053866
 
 seed: 42
 

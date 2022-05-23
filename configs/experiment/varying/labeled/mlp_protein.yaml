@@ -16,13 +16,13 @@ dataset: "protein"
 
 datamodule:
   use_unlabeled_dataloader: False
-  batch_size: 256
+  batch_size: 128
 
 model:
   in_features: 9
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.6
-  lr: 0.002945575307214123
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 0.0019792772454519446
 
 seed: 42
 

@@ -15,17 +15,17 @@ modelname: "vae"
 dataset: "elevators"
 
 datamodule:
-  batch_size: 128
+  batch_size: 64
 
 model:
   enc_in_features: 18
   enc_out_features: 2
   dec_in_features: 2
   dec_out_features: 18
-  regularization_loss_multiplier: 0.002
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.1
-  lr: 9.615903612009528e-05
+  regularization_loss_multiplier: 0.29038047790527344
+  leaky_relu_slope: 0.16
+  dropout_proba: 0.2
+  lr: 0.00012365229400121313
 
 seed: 42
 

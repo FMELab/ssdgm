@@ -15,7 +15,7 @@ modelname: "m2vae"
 dataset: "protein"
 
 datamodule:
-  batch_size: 64
+  batch_size: 128
 
 model:
   enc_in_features: 10
@@ -23,10 +23,10 @@ model:
   dec_in_features: 3
   dec_out_features: 9
   reg_in_features: 9
-  regressor_loss_multiplier: 7.868918205127268
-  leaky_relu_slope: 0.01
-  dropout_proba: 0.9
-  lr: 1.2721230023107338e-05
+  regressor_loss_multiplier: 3.4013527250377025
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.2
+  lr: 1.9367253804469228e-05
 
 seed: 42
 

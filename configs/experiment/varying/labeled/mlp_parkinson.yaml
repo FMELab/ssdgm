@@ -20,9 +20,9 @@ datamodule:
 
 model:
   in_features: 19
-  leaky_relu_slope: 0.16
-  dropout_proba: 0.4
-  lr: 1.5793306424515745e-05
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.1
+  lr: 0.00025872755360896953
 
 seed: 42
 

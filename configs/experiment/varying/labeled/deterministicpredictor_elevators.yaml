@@ -20,10 +20,10 @@ datamodule:
 
 model:
   reg_in_features: 2
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-03-29_10-35-38/checkpoints/epoch_080.ckpt
-  leaky_relu_slope: 0.11
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
+  leaky_relu_slope: 0.16
   dropout_proba: 0.4
-  lr: 0.0006
+  lr: 0.00013622008399174687
 
 seed: 42
 

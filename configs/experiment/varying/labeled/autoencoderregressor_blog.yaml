@@ -20,10 +20,10 @@ datamodule:
 
 model:
   reg_in_features: 2
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-03-29_10-21-57/checkpoints/epoch_160.ckpt
-  leaky_relu_slope: 0.06
-  dropout_proba: 0.1
-  lr: 0.006
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-04-05_10-59-23/checkpoints/epoch_081.ckpt
+  leaky_relu_slope: 0.11
+  dropout_proba: 0.9
+  lr: 0.000832786102384599
 
 seed: 42
 

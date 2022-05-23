@@ -15,15 +15,16 @@ modelname: "ssdkl"
 dataset: "ctslice"
 
 datamodule:
-  batch_size: 256
+  train_ssdkl: True
+  batch_size: 64
 
 model:
   enc_in_features: 379
   enc_out_features: 2
-  variance_loss_multiplier: 4.0819846412724112
+  variance_loss_multiplier: 0.14721508338003464
   leaky_relu_slope: 0.06
   dropout_proba: 0.2
-  lr: 0.004347255169844543
+  lr: 0.0025789030276417847
 
 seed: 42
 
