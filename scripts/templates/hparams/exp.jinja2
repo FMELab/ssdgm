@@ -17,6 +17,9 @@ dataset: "{{ datamodule_name }}"
 {%- if model_name == "mlp" or model_name == "autoencoderregressor" or model_name == "deterministicpredictor" or model_name == "probabilisticpredictor" %}
 datamodule:
   use_unlabeled_dataloader: False
+{%- elif model_name == "ssdkl" %}
+datamodule:
+  train_ssdkl: True
 {%- endif %}
 
 model:
@@ -29,17 +32,17 @@ model:
   dec_out_features: {{ features }}
 {%- elif model_name == "autoencoderregressor" %}
   {%- if datamodule_name == "blog" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-04-05_10-59-23/checkpoints/epoch_081.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/blog/100/2022-04-08_17-40-50/checkpointing/iq9jorjc/checkpoints/epoch=32-step=26465.ckpt
   {%- elif datamodule_name == "ctslice" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-04-05_11-03-20/checkpoints/epoch_172.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-04-08_17-49-57/checkpointing/25inpmm8/checkpoints/epoch=29-step=12299.ckpt
   {%- elif datamodule_name == "elevators" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/elevators/100/2022-04-05_10-56-48/checkpoints/epoch_007.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/elevators/100/2022-04-08_17-32-05/checkpointing/p0sbn8kf/checkpoints/epoch=37-step=9233.ckpt
   {%- elif datamodule_name == "parkinson" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/parkinson/100/2022-04-05_10-56-27/checkpoints/epoch_042.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/parkinson/100/2022-04-08_17-31-40/checkpointing/1rf8laah/checkpoints/epoch=19-step=1499.ckpt
   {%- elif datamodule_name == "protein" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-04-05_10-57-10/checkpoints/epoch_030.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-04-08_17-34-56/checkpointing/185k2vyr/checkpoints/epoch=24-step=17449.ckpt
   {%- elif datamodule_name == "skillcraft" %}
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/skillcraft/100/2022-04-05_10-56-11/checkpoints/epoch_047.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/skillcraft/100/2022-04-08_17-31-11/checkpointing/xq3ju076/checkpoints/epoch=73-step=1331.ckpt
   {%- endif %}
   reg_in_features: {{ latent }}
 {%- elif model_name == "vae"%}
@@ -49,32 +52,32 @@ model:
   dec_out_features: {{ features }}
 {%- elif model_name == "deterministicpredictor" %}
   {%- if datamodule_name == "blog" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-08_17-48-01/checkpointing/2ns63c2m/checkpoints/epoch=42-step=34485.ckpt
   {%- elif datamodule_name == "ctslice" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-05_11-12-33/checkpoints/epoch_080.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-08_17-58-18/checkpointing/2gsvg4kk/checkpoints/epoch=54-step=45044.ckpt
   {%- elif datamodule_name == "elevators" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-08_17-34-32/checkpointing/1pspu5cv/checkpoints/epoch=31-step=7775.ckpt
   {%- elif datamodule_name == "parkinson" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-05_10-57-47/checkpoints/epoch_062.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-08_17-32-40/checkpointing/2hfmsrjx/checkpoints/epoch=50-step=3824.ckpt
   {%- elif datamodule_name == "protein" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-05_11-00-31/checkpoints/epoch_027.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-08_17-37-46/checkpointing/1mqknrgr/checkpoints/epoch=35-step=25127.ckpt
   {%- elif datamodule_name == "skillcraft" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-05_10-57-26/checkpoints/epoch_061.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-08_17-32-03/checkpointing/wkl5mith/checkpoints/epoch=48-step=881.ckpt
   {%- endif %}
   reg_in_features: {{ latent }}
 {%- elif model_name == "probabilisticpredictor" %}
   {%- if datamodule_name == "blog" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-08_17-48-01/checkpointing/2ns63c2m/checkpoints/epoch=42-step=34485.ckpt
   {%- elif datamodule_name == "ctslice" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-05_11-12-33/checkpoints/epoch_080.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/ctslice/100/2022-04-08_17-58-18/checkpointing/2gsvg4kk/checkpoints/epoch=54-step=45044.ckpt
   {%- elif datamodule_name == "elevators" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-05_10-58-30/checkpoints/epoch_074.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/elevators/100/2022-04-08_17-34-32/checkpointing/1pspu5cv/checkpoints/epoch=31-step=7775.ckpt
   {%- elif datamodule_name == "parkinson" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-05_10-57-47/checkpoints/epoch_062.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/parkinson/100/2022-04-08_17-32-40/checkpointing/2hfmsrjx/checkpoints/epoch=50-step=3824.ckpt
   {%- elif datamodule_name == "protein" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-05_11-00-31/checkpoints/epoch_027.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/protein/100/2022-04-08_17-37-46/checkpointing/1mqknrgr/checkpoints/epoch=35-step=25127.ckpt
   {%- elif datamodule_name == "skillcraft" %}
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-05_10-57-26/checkpoints/epoch_061.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/skillcraft/100/2022-04-08_17-32-03/checkpointing/wkl5mith/checkpoints/epoch=48-step=881.ckpt
   {%- endif %}
   reg_in_features: {{ latent }}
 {%- elif model_name == "m2vae" %}
