@@ -16,7 +16,7 @@ datamodule:
   use_unlabeled_dataloader: False
 
 model:
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-03-29_10-42-44/checkpoints/epoch_140.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/ctslice/100/2022-04-05_11-03-20/checkpoints/epoch_172.ckpt
   reg_in_features: 2
 
 seed: 42

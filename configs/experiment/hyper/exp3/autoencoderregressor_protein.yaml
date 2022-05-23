@@ -16,7 +16,7 @@ datamodule:
   use_unlabeled_dataloader: False
 
 model:
-  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-03-29_11-00-29/checkpoints/epoch_054.ckpt
+  checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/autoencoder/protein/100/2022-04-05_10-57-10/checkpoints/epoch_030.ckpt
   reg_in_features: 2
 
 seed: 42

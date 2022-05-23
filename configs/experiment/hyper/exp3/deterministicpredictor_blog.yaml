@@ -16,7 +16,7 @@ datamodule:
   use_unlabeled_dataloader: False
 
 model:
-  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-03-29_10-22-02/checkpoints/epoch_083.ckpt
+  vae_checkpoint_path: ${original_work_dir}/logs/experiments/runs/checkpointing/vae/blog/100/2022-04-05_11-02-05/checkpoints/epoch_225.ckpt
   reg_in_features: 2
 
 seed: 42
